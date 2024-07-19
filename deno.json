@@ -1,0 +1,6 @@
+{
+    "tasks": {
+        "dev": "dart run packages/dyte/bin/dyte.dart",
+        "dev:basic": "dart run packages/dyte/bin/dyte.dart run examples/basic"
+    }
+}
