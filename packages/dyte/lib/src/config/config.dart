@@ -5,15 +5,15 @@ import 'dyte_config.dart';
 export 'dyte_config.dart';
 
 /// Public function used for defining configuration in a `dyte.config.dart` file.
-/// 
+///
 /// The configuration is passed as, and returned as a [DyteConfig] object.
-/// 
+///
 /// This function contains all the options used for the configuration.
 /// Configuration files should be written with a variable assignment to this function. The variable should be called `config`, and should look something like this:
-/// 
+///
 /// ```dart
 /// import 'package:dyte/dyte.dart';
-/// 
+///
 /// // Dyte Configuration in a dyte.config.dart file
 /// var config = defineConfig(
 /// 	// define configuration here
@@ -56,10 +56,10 @@ DyteConfig defineConfig({
 }
 
 /// Function used for merging configuration together.
-/// 
-/// While merging the [superior] configuration is given more priority over the [inferior], 
+///
+/// While merging the [superior] configuration is given more priority over the [inferior],
 /// meaning that the value of [superior] is used first before the value of [inferior].
-/// 
+///
 /// See [defineConfig] for more information about the options, and how the configuration works.
 DyteConfig mergeConfig(DyteConfig superior, DyteConfig inferior) {
   return DyteConfig(

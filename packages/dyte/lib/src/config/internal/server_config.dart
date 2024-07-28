@@ -1,9 +1,7 @@
 import '../dyte_config.dart';
 
 /// Generates default Dyte Config in the case there is none anymore
-DyteConfig defaultConfig(
-  DyteMode mode, String cwd
-) {
+DyteConfig defaultConfig(DyteMode mode, String cwd) {
   return DyteConfig(
     root: cwd,
     base: "/",

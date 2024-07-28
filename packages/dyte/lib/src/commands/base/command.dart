@@ -8,9 +8,11 @@ abstract class DyteCommand<T> extends Command<T> {
   DyteLogger get logger {
     if (runner is DyteCommandRunner) {
       _logger ??= DyteLogger(verbose: (runner as DyteCommandRunner).verbose);
-      return _logger ?? DyteLogger(verbose: (runner as DyteCommandRunner).verbose);
+      return _logger ??
+          DyteLogger(verbose: (runner as DyteCommandRunner).verbose);
     } else {
-      throw Exception("Logger cannot be used here: the runner is not of instance DyteCommandRunner");
+      throw Exception(
+          "Logger cannot be used here: the runner is not of instance DyteCommandRunner");
     }
   }
 

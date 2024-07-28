@@ -10,6 +10,4 @@ Map parseConfig(String path) {
   } catch (e) {
     throw FormatException("JSON is meant to be a map", e);
   }
-  
-  
 }

@@ -2,9 +2,9 @@ import 'package:json_annotation/json_annotation.dart';
 
 /// The configuration for a Dyte project, usually gotten from a Dyte config file (`dyte.config.dart` or `.dyterc`), that is used to configure the default behaviour of a Dyte project.
 ///
-/// The Dyte Configuration is used for configuring major behaviours in the Dyte Server: 
-/// The options used for running main dyte tasks like starting the dev server, 
-/// Configuring module resolution during build and development, 
+/// The Dyte Configuration is used for configuring major behaviours in the Dyte Server:
+/// The options used for running main dyte tasks like starting the dev server,
+/// Configuring module resolution during build and development,
 /// Resolving Dart and JS Modules, as well as interop between them.
 ///
 /// ```dart
@@ -33,7 +33,22 @@ class DyteConfig {
   final bool? multiPackages;
   final bool? hmr;
 
-  DyteConfig({ this.root,  this.base,  this.publicDir,  this.publicRoot,  this.pubspec,  this.dev,  this.build,  this.server,  this.plugins,  this.js,  this.mode,  this.logLevel,  this.experimental,  this.multiPackages,  this.hmr});
+  DyteConfig(
+      {this.root,
+      this.base,
+      this.publicDir,
+      this.publicRoot,
+      this.pubspec,
+      this.dev,
+      this.build,
+      this.server,
+      this.plugins,
+      this.js,
+      this.mode,
+      this.logLevel,
+      this.experimental,
+      this.multiPackages,
+      this.hmr});
 
   // Dartpack Options
 
@@ -41,21 +56,20 @@ class DyteConfig {
 }
 
 @JsonSerializable()
-class DyteExperimentalOptions {
-}
+class DyteExperimentalOptions {}
 
 class DyteServerOptions {
   final int? port;
   final String? host;
 
-  DyteServerOptions({ this.port,  this.host});
+  DyteServerOptions({this.port, this.host});
 }
 
 class DyteDevOptions {
   final bool? bundleJsDeps;
   final bool? fullReload;
 
-  DyteDevOptions({ this.bundleJsDeps,  this.fullReload});
+  DyteDevOptions({this.bundleJsDeps, this.fullReload});
 }
 
 class DyteBuildOptions {
@@ -63,7 +77,7 @@ class DyteBuildOptions {
   final bool? bundleAsJs;
   final bool? bundleWithTypes;
 
-  DyteBuildOptions({ this.outdir,  this.bundleAsJs,  this.bundleWithTypes});
+  DyteBuildOptions({this.outdir, this.bundleAsJs, this.bundleWithTypes});
 }
 
 class DyteJSOptions {
@@ -75,7 +89,13 @@ class DyteJSOptions {
   final String? cdn;
   final bool? deno;
 
-  DyteJSOptions({ this.typescript,  this.jsx,  this.nodeModulesDir,  this.packageManager,  this.cdn,  this.deno});
+  DyteJSOptions(
+      {this.typescript,
+      this.jsx,
+      this.nodeModulesDir,
+      this.packageManager,
+      this.cdn,
+      this.deno});
 
   // JSIGen Options
 }
