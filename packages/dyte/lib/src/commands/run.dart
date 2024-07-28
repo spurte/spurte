@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:isolate';
 import 'package:io/ansi.dart';
 import 'package:package_config/package_config.dart';
 
@@ -32,8 +33,9 @@ class RunCommand extends DyteCommand {
 
     // ensure package has been built and all dependencies installed
     final packageConfigPath = File(p.join(projectDir.path, ".dart_tool", "package_config.json"));
+    final packageConfig = await findPackageConfig(projectDir);
 
-    if (!(await packageConfigPath.exists())) {
+    if (!(await packageConfigPath.exists()) || packageConfig == null) {
       logger.warn("Package config cannot be found");
       logger.info("Running 'dart pub get'");
       var success = (await dyteRunner.run("dart", args: ["pub", "get"], cwd: projectDir.path)) == 0;
@@ -43,9 +45,33 @@ class RunCommand extends DyteCommand {
         exit(1);
       }
     }
-    final packageConfig = await findPackageConfig(projectDir);
-
-    // get configuration
     
+    // get configuration
+    print(await getConfiguration(projectDir, name: "dyte"));
   }
+}
+
+Future<String> getConfiguration(Directory dir, {required String name}) async {
+  var filename = "$name.config.dart";
+  final file = File(p.join(dir.path, filename));
+  final dartConfig = Directory(p.join(dir.path, ".dart_tool"));
+  final dyteConfig = await Directory(p.join(dartConfig.path, "dyte")).create(recursive: true);
+  final dyteConfigResolveFile = await File(p.join(dyteConfig.path, "config.dart")).create(recursive: true).then((value) async {
+    return await value.writeAsString('''import "../../dyte.config.dart";
+import "dart:isolate";
+import 'dart:convert';
+
+void main(_, SendPort port) {
+  port.send(config);
+}''');
+  });
+
+  final port = ReceivePort();
+  final isolate = await Isolate.spawnUri(Uri.file(dyteConfigResolveFile.absolute.path), [], port.sendPort);
+
+  final dynamic response = await port.first;
+  print(response);
+  print(response.runtimeType);
+
+  return "";
 }

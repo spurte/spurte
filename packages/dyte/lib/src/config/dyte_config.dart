@@ -1,3 +1,5 @@
+import 'package:json_annotation/json_annotation.dart';
+
 /// The configuration for a Dyte project, usually gotten from a Dyte config file (`dyte.config.dart` or `.dyterc`), that is used to configure the default behaviour of a Dyte project.
 ///
 /// The Dyte Configuration is used for configuring major behaviours in the Dyte Server: 
@@ -13,6 +15,7 @@
 /// 	// define configuration here
 /// );
 /// ```
+@JsonSerializable()
 class DyteConfig {
   final String? root;
   final String? base;
@@ -22,7 +25,7 @@ class DyteConfig {
   final DyteDevOptions? dev;
   final DyteBuildOptions? build;
   final DyteServerOptions? server;
-  final Iterable<DytePlugin>? plugins;
+  final Iterable<String>? plugins;
   final DyteJSOptions? js;
   final DyteMode? mode;
   final DyteLogLevel? logLevel;
@@ -37,6 +40,7 @@ class DyteConfig {
   // WAIGen Options
 }
 
+@JsonSerializable()
 class DyteExperimentalOptions {
 }
 
@@ -45,10 +49,6 @@ class DyteServerOptions {
   final String? host;
 
   DyteServerOptions({ this.port,  this.host});
-}
-
-// TODO: Implement Plugin API
-class DytePlugin {
 }
 
 class DyteDevOptions {
@@ -80,22 +80,34 @@ class DyteJSOptions {
   // JSIGen Options
 }
 
+@JsonEnum(valueField: 'packageManager')
 enum DyteJSPackageManager {
-  npm,
-  pnpm,
-  yarn,
-  bun
+  npm('npm'),
+  pnpm('pnpm'),
+  yarn('yarn'),
+  bun('bun');
+
+  const DyteJSPackageManager(this.name);
+  final String name;
 }
 
+@JsonEnum(valueField: 'mode')
 enum DyteMode {
-  development,
-  production
+  development('development'),
+  production('production');
+
+  const DyteMode(this.name);
+  final String name;
 }
 
+@JsonEnum(valueField: 'logLevel')
 enum DyteLogLevel {
-  debug,
-  info,
-  warn,
-  error,
-  none
+  debug('debug'),
+  info('info'),
+  warn('warn'),
+  error('error'),
+  none('none');
+
+  const DyteLogLevel(this.name);
+  final String name;
 }
