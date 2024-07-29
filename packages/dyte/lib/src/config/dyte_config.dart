@@ -72,13 +72,27 @@ class DyteExperimentalOptions {
 class DyteServerOptions {
   final int? port;
   final String? host;
+  final DyteServerHttpsOptions? https;
 
-  DyteServerOptions({this.port, this.host});
+  DyteServerOptions({this.port, this.host, this.https});
 
   factory DyteServerOptions.fromJson(Map<String, dynamic> json) => _$DyteServerOptionsFromJson(json);
 
   // Dartpack Options
   Map<String, dynamic> toJson() => _$DyteServerOptionsToJson(this);
+}
+
+@JsonSerializable()
+class DyteServerHttpsOptions {
+  String? cert;
+  String? key;
+
+  DyteServerHttpsOptions({ this.cert, this.key });
+
+  factory DyteServerHttpsOptions.fromJson(Map<String, dynamic> json) => _$DyteServerHttpsOptionsFromJson(json);
+
+  // Dartpack Options
+  Map<String, dynamic> toJson() => _$DyteServerHttpsOptionsToJson(this);
 }
 
 @JsonSerializable()

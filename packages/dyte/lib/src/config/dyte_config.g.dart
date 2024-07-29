@@ -71,12 +71,31 @@ DyteServerOptions _$DyteServerOptionsFromJson(Map<String, dynamic> json) =>
     DyteServerOptions(
       port: (json['port'] as num?)?.toInt(),
       host: json['host'] as String?,
+      https: json['https'] == null
+          ? null
+          : DyteServerHttpsOptions.fromJson(
+              json['https'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$DyteServerOptionsToJson(DyteServerOptions instance) =>
     <String, dynamic>{
       'port': instance.port,
       'host': instance.host,
+      'https': instance.https,
+    };
+
+DyteServerHttpsOptions _$DyteServerHttpsOptionsFromJson(
+        Map<String, dynamic> json) =>
+    DyteServerHttpsOptions(
+      cert: json['cert'] as String?,
+      key: json['key'] as String?,
+    );
+
+Map<String, dynamic> _$DyteServerHttpsOptionsToJson(
+        DyteServerHttpsOptions instance) =>
+    <String, dynamic>{
+      'cert': instance.cert,
+      'key': instance.key,
     };
 
 DyteDevOptions _$DyteDevOptionsFromJson(Map<String, dynamic> json) =>

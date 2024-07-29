@@ -3,7 +3,9 @@ import 'dart:io';
 import 'dart:isolate';
 import 'package:dyte/dyte.dart';
 import 'package:dyte/src/config/internal/server_config.dart';
+import 'package:dyte/src/options/options.dart';
 import 'package:dyte/src/parser/parser.dart';
+import 'package:dyte/src/serve.dart';
 import 'package:io/ansi.dart';
 import 'package:package_config/package_config.dart';
 
@@ -50,8 +52,15 @@ class RunCommand extends DyteCommand {
 
     // get configuration
     final config = mergeConfig(getConfiguration(projectDir, name: "dyte"), defaultConfig(DyteMode.development, cwd.path));
-    
-    
+
+    final serverOptions = createServerOptions(config);
+
+    final server = serve(serverOptions);
+
+    server.listen(
+      serverOptions.port, 
+      onEnd: () => print("Server started on http${config.server?.https == null ? "" : "s"}://${config.server?.host ?? "localhost"}:${config.server?.port ?? 8000}")
+    );
   }
 }
 
@@ -60,3 +69,4 @@ DyteConfig getConfiguration(Directory dir, {required String name}) {
   
   return parseConfig(file);
 }
+
