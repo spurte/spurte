@@ -1,5 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 
+part 'dyte_config.g.dart';
+
 /// The configuration for a Dyte project, usually gotten from a Dyte config file (`dyte.config.dart` or `.dyterc`), that is used to configure the default behaviour of a Dyte project.
 ///
 /// The Dyte Configuration is used for configuring major behaviours in the Dyte Server:
@@ -50,36 +52,63 @@ class DyteConfig {
       this.multiPackages,
       this.hmr});
 
-  // Dartpack Options
+  factory DyteConfig.fromJson(Map<String, dynamic> json) => _$DyteConfigFromJson(json);
 
+  // Dartpack Options
+  Map<String, dynamic> toJson() => _$DyteConfigToJson(this);
   // WAIGen Options
 }
 
-@JsonSerializable()
-class DyteExperimentalOptions {}
+class DyteExperimentalOptions {
+  DyteExperimentalOptions();
 
+  factory DyteExperimentalOptions.fromJson(Map<String, dynamic> json) => DyteExperimentalOptions();
+
+  // Dartpack Options
+  Map<String, dynamic> toJson() => {};
+}
+
+@JsonSerializable()
 class DyteServerOptions {
   final int? port;
   final String? host;
 
   DyteServerOptions({this.port, this.host});
+
+  factory DyteServerOptions.fromJson(Map<String, dynamic> json) => _$DyteServerOptionsFromJson(json);
+
+  // Dartpack Options
+  Map<String, dynamic> toJson() => _$DyteServerOptionsToJson(this);
 }
 
+@JsonSerializable()
 class DyteDevOptions {
   final bool? bundleJsDeps;
   final bool? fullReload;
 
   DyteDevOptions({this.bundleJsDeps, this.fullReload});
+
+  factory DyteDevOptions.fromJson(Map<String, dynamic> json) => _$DyteDevOptionsFromJson(json);
+
+  // Dartpack Options
+  Map<String, dynamic> toJson() => _$DyteDevOptionsToJson(this);
 }
 
+@JsonSerializable()
 class DyteBuildOptions {
   final String? outdir;
   final bool? bundleAsJs;
   final bool? bundleWithTypes;
 
   DyteBuildOptions({this.outdir, this.bundleAsJs, this.bundleWithTypes});
+
+  factory DyteBuildOptions.fromJson(Map<String, dynamic> json) => _$DyteBuildOptionsFromJson(json);
+
+  // Dartpack Options
+  Map<String, dynamic> toJson() => _$DyteBuildOptionsToJson(this);
 }
 
+@JsonSerializable()
 class DyteJSOptions {
   final bool? typescript;
   final bool? jsx;
@@ -98,6 +127,11 @@ class DyteJSOptions {
       this.deno});
 
   // JSIGen Options
+
+  factory DyteJSOptions.fromJson(Map<String, dynamic> json) => _$DyteJSOptionsFromJson(json);
+
+  // Dartpack Options
+  Map<String, dynamic> toJson() => _$DyteJSOptionsToJson(this);
 }
 
 @JsonEnum(valueField: 'packageManager')
@@ -107,8 +141,8 @@ enum DyteJSPackageManager {
   yarn('yarn'),
   bun('bun');
 
-  const DyteJSPackageManager(this.name);
-  final String name;
+  const DyteJSPackageManager(this.packageManager);
+  final String packageManager;
 }
 
 @JsonEnum(valueField: 'mode')
@@ -116,8 +150,8 @@ enum DyteMode {
   development('development'),
   production('production');
 
-  const DyteMode(this.name);
-  final String name;
+  const DyteMode(this.mode);
+  final String mode;
 }
 
 @JsonEnum(valueField: 'logLevel')
@@ -128,6 +162,6 @@ enum DyteLogLevel {
   error('error'),
   none('none');
 
-  const DyteLogLevel(this.name);
-  final String name;
+  const DyteLogLevel(this.logLevel);
+  final String logLevel;
 }

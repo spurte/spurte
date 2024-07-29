@@ -1,14 +1,14 @@
-import 'dart:convert';
 import 'dart:io';
 
-import '../config/dyte_config.dart';
+import 'package:dyte/src/config/dyte_config.dart';
+import 'package:yaml/yaml.dart';
 
 DyteConfig parseConfig(String path) {
   Map<String, dynamic> config;
-  final jsonData = File(path).readAsStringSync();
+  final yamlData = File(path).readAsStringSync();
 
-  try {
-    config = jsonDecode(jsonData);
+   try {
+    config = loadYaml(yamlData);
   } catch (e) {
     throw FormatException("JSON is meant to be a map", e);
   }

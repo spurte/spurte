@@ -32,7 +32,7 @@ DyteConfig defineConfig({
   DyteDevOptions? dev,
   DyteBuildOptions? build,
   String? pubspec,
-  List<DytePlugin>? plugins,
+  List<String>? plugins,
   String? publicRoot,
   String? root,
 }) {
