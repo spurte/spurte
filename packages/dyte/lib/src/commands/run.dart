@@ -53,7 +53,7 @@ class RunCommand extends DyteCommand {
     // get configuration
     final config = mergeConfig(getConfiguration(projectDir, name: "dyte"), defaultConfig(DyteMode.development, cwd.path));
 
-    final serverOptions = createServerOptions(config);
+    final serverOptions = createServerOptions(config, cwd.path);
 
     final server = serve(serverOptions);
 
