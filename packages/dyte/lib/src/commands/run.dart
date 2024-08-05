@@ -23,6 +23,7 @@ class RunCommand extends DyteCommand {
   FutureOr? run() async {
     // get directory
     final cwd = Directory.current;
+
     final dir = (argResults?.rest ?? []).isEmpty ? "." : argResults!.rest[0];
     final projectDir = Directory(p.join(cwd.absolute.path, dir));
     if (!(await projectDir.exists())) {
@@ -51,9 +52,10 @@ class RunCommand extends DyteCommand {
     }
 
     // get configuration
-    final config = mergeConfig(getConfiguration(projectDir, name: "dyte"), defaultConfig(DyteMode.development, cwd.path));
+    final config = mergeConfig(getConfiguration(projectDir, name: "dyte"), defaultConfig(DyteMode.development, projectDir.path));
 
-    final serverOptions = createServerOptions(config, cwd.path);
+    print("${config.root} ${projectDir.path}");
+    final serverOptions = createServerOptions(config, projectDir.path);
 
     final server = serve(serverOptions);
 

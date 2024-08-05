@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:path/path.dart' as p;
 import 'package:shelf_static/shelf_static.dart';
 
 import 'options/server_options.dart';
@@ -21,7 +22,9 @@ DyteServer serve(ServerOptions options) {
     if (!path.startsWith('/')) path = "/$path";
 
     if (path.startsWith(options.publicRoot)) {
-      return createStaticHandler(fileSystemPath)
+      return createStaticHandler(p.join(options.publicDir, path.replaceFirst('/${options.publicDir}', '').replaceFirst('/', '')))(request);
+    } else {
+      return Response.notFound('The path $path could not be found.');
     }
   });
 
@@ -60,4 +63,6 @@ class DyteServerResult {
   final Function close;
 
   const DyteServerResult._({required this.close, required HttpServer server}): _server = server;
+
+  HttpServer get server => _server;
 }
