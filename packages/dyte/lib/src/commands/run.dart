@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:isolate';
 import 'package:dyte/dyte.dart';
 import 'package:dyte/src/config/internal/server_config.dart';
+import 'package:dyte/src/config_file.dart';
 import 'package:dyte/src/options/options.dart';
 import 'package:dyte/src/parser/parser.dart';
 import 'package:dyte/src/serve.dart';
@@ -54,21 +55,21 @@ class RunCommand extends DyteCommand {
     // get configuration
     final config = mergeConfig(getConfiguration(projectDir, name: "dyte"), defaultConfig(DyteMode.development, projectDir.path));
 
-    print("${config.root} ${projectDir.path}");
     final serverOptions = createServerOptions(config, projectDir.path);
 
-    final server = serve(serverOptions);
+    final server = await serve(serverOptions);
 
-    server.listen(
+    final webServer = await server.listen(
       serverOptions.port, 
-      onEnd: () => print("Server started on http${config.server?.https == null ? "" : "s"}://${config.server?.host ?? "localhost"}:${config.server?.port ?? 8000}")
+      onListen: () => print("Server started on http${config.server?.https == null ? "" : "s"}://${config.server?.host ?? "localhost"}:${config.server?.port ?? 8000}")
     );
+
+    server.repl(webServer.server);
   }
 }
 
-DyteConfig getConfiguration(Directory dir, {required String name}) {
-  final file = ["$name.config.json", "$name.config.yaml"].map((e) => File(p.join(dir.path, e))).firstWhere((element) => element.existsSync()).path;
+DyteConfig getConfiguration(Directory dir, {required String name, String? config}) {
+  String file = getConfigFile(dir, name);
   
   return parseConfig(file);
 }
-
