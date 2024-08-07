@@ -10,8 +10,8 @@ import 'common.dart';
 
 final sdkDdcKernelPath = p.join(sdkDir, 'lib', '_internal', 'ddc_platform.dill');
 
-final dartSdk = (String dir) => p.join(dir, '.dart_tool', 'out', 'dart_sdk.js');
-final outputDill = (String dir, [String name = 'app']) => p.join(dir, '.dart_tool', 'out', '$name.dill');
+String dartSdk(String dir) => p.join(dir, '.dart_tool', 'out', 'dart_sdk.js');
+String outputDill(String dir, [String name = 'app']) => p.join(dir, '.dart_tool', 'out', '$name.dill');
 
 Future<void> compileDartSdk(Directory dir) async {
   // TODO: Experiment with options

@@ -1,7 +1,8 @@
 name: dyte
-description: A sample command-line application with basic argument parsing.
-version: 0.0.1
-# repository: https://github.com/my_org/my_repo
+description: |
+  Dyte: Frontend Tooling at your fingertips
+version: 0.0.1-pre
+repository: https://github.com/nikeokoronkwo/dyte-dart
 
 environment:
   sdk: ^3.3.0

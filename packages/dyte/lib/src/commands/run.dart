@@ -1,13 +1,11 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:isolate';
 import 'package:dyte/dyte.dart';
 import 'package:dyte/src/config/internal/server_config.dart';
 import 'package:dyte/src/config_file.dart';
 import 'package:dyte/src/options/options.dart';
 import 'package:dyte/src/parser/parser.dart';
 import 'package:dyte/src/serve.dart';
-import 'package:io/ansi.dart';
 import 'package:package_config/package_config.dart';
 
 import 'base/command.dart';
