@@ -33,6 +33,7 @@ DyteConfig _$DyteConfigFromJson(Map<String, dynamic> json) => DyteConfig(
               json['experimental'] as Map<String, dynamic>),
       multiPackages: json['multiPackages'] as bool?,
       hmr: json['hmr'] as bool?,
+      entry: json['entry'] as String?,
     );
 
 Map<String, dynamic> _$DyteConfigToJson(DyteConfig instance) =>
@@ -42,6 +43,7 @@ Map<String, dynamic> _$DyteConfigToJson(DyteConfig instance) =>
       'publicDir': instance.publicDir,
       'publicRoot': instance.publicRoot,
       'pubspec': instance.pubspec,
+      'entry': instance.entry,
       'dev': instance.dev,
       'build': instance.build,
       'server': instance.server,

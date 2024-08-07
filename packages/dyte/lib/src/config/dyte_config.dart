@@ -19,11 +19,27 @@ part 'dyte_config.g.dart';
 /// ```
 @JsonSerializable()
 class DyteConfig {
+  /// The root of the dyte project. Defaults to the current working directory
   final String? root;
+
+  /// The base url of the dyte project.
   final String? base;
+
+  /// The public directory to use for serving public assets. Defaults to `public/`
   final String? publicDir;
+
+  /// The base url to serve public assets at. Defaults to `/`
   final String? publicRoot;
+
+  /// The path to the pubspec.yaml file. Defaults to the pubspec.yaml file located at the [root] of the directory
   final String? pubspec;
+
+  /// The main entrypoint to the dyte project
+  /// 
+  /// Since Dart is a compiled language that makes use of a main function, an entrypoint can be specified relative to the project.
+  /// 
+  /// Defaults to `web/main.dart` or `web/index.dart` if the former isn't there.
+  final String? entry;
   final DyteDevOptions? dev;
   final DyteBuildOptions? build;
   final DyteServerOptions? server;
@@ -50,7 +66,8 @@ class DyteConfig {
       this.logLevel,
       this.experimental,
       this.multiPackages,
-      this.hmr});
+      this.hmr,
+      this.entry});
 
   factory DyteConfig.fromJson(Map<String, dynamic> json) => _$DyteConfigFromJson(json);
 
