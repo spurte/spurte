@@ -61,8 +61,8 @@ class DyteServer {
         case 'q':
           print("Exiting program");
           await server.close();
-          await stdinQueue.cancel();
           if (_devClient != null) terminateClient(_devClient, error: false);
+          await stdinQueue.cancel();
         default:
       }
     }
