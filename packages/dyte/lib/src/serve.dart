@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:async/async.dart';
-import 'package:dyte/src/bundler/dart2js.dart';
 import 'package:frontend_server_client/frontend_server_client.dart';
 import 'package:io/ansi.dart';
 import 'package:package_config/package_config.dart';
@@ -13,8 +12,9 @@ import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart' as io;
 
 import 'options/server_options.dart';
-import 'bundler/dartdevc.dart';
-import 'bundler/common.dart';
+import 'serve/dartdevc.dart';
+import 'serve/common.dart';
+import 'serve/dart2js.dart';
 
 class DyteServerResult {
   final HttpServer _server;
