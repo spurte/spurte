@@ -1,6 +1,6 @@
 import 'package:web/web.dart';
 
-part 'info.g.dart';
+import 'info.g.dart';
 
 void main(List<String> args) {
   print(random);

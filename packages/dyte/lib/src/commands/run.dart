@@ -5,6 +5,7 @@ import 'package:dyte/src/config/internal/server_config.dart';
 import 'package:dyte/src/config_file.dart';
 import 'package:dyte/src/options/options.dart';
 import 'package:dyte/src/parser/parser.dart';
+import 'package:dyte/src/plugin.dart';
 import 'package:dyte/src/serve.dart';
 import 'package:package_config/package_config.dart';
 
@@ -53,8 +54,24 @@ class RunCommand extends DyteCommand {
     // get configuration
     final config = mergeConfig(getConfiguration(projectDir, name: "dyte"), defaultConfig(DyteMode.development, projectDir.path));
 
+    final stopwatch = Stopwatch();
+    stopwatch.start();
+
+    // run plugins
+    try {
+      await runPlugins(config.plugins?.toList() ?? [], projectDir, config: getConfigFile(projectDir, "dyte"));
+    } catch (e) {
+      logger.error(e.toString(), error: true);
+      // exit(1);
+    } finally {
+      stopwatch.stop();
+      print(stopwatch.elapsed.inSeconds);
+    }
+
+    // create server options from configuration
     final serverOptions = createServerOptions(config, projectDir.path);
 
+    // build web server and run
     final server = await serve(serverOptions);
 
     final webServer = await server.listen(

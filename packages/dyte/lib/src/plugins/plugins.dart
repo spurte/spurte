@@ -16,7 +16,7 @@ class DyteApp {
 }
 
 enum DyteKind {
-  Import,
+  Import, File
 }
 
 class DyteResolveOptions {

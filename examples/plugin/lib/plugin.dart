@@ -18,7 +18,7 @@ final plugin = DytePlugin(
         });
         return DytePluginResult(
           src: srclines.join("\n\n"),
-          path: id.replaceFirst(".txt", ".g.dart")
+          path: options?.path.replaceFirst(".txt", ".g.dart")
         );
       default:
         return DytePluginResult();
