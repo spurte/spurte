@@ -6,3 +6,4 @@
 library dyte;
 
 export 'src/config/config.dart';
+export 'src/api/api.dart';

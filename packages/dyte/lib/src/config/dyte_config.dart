@@ -75,7 +75,7 @@ class DyteConfig {
   /// ?
   final bool? multiPackages;
 
-  DyteConfig(
+  const DyteConfig(
       {this.root,
       this.base,
       this.publicDir,

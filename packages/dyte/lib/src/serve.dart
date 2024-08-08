@@ -106,7 +106,6 @@ Future<DyteServer> serve(ServerOptions options) async {
     client = await dartDevCServer(relativeEntry, Directory(options.cwd));
   }
 
-  // TODO: use pipeline
   Cascade cascade = await buildServer(client, relativeEntry, options);
   final handler = Pipeline().addMiddleware(logRequests()).addHandler(cascade.handler);
 
