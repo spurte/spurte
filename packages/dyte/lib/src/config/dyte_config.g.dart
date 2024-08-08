@@ -42,18 +42,18 @@ Map<String, dynamic> _$DyteConfigToJson(DyteConfig instance) =>
       'base': instance.base,
       'publicDir': instance.publicDir,
       'publicRoot': instance.publicRoot,
-      'pubspec': instance.pubspec,
       'entry': instance.entry,
+      'mode': _$DyteModeEnumMap[instance.mode],
+      'plugins': instance.plugins?.toList(),
+      'pubspec': instance.pubspec,
       'dev': instance.dev,
       'build': instance.build,
       'server': instance.server,
-      'plugins': instance.plugins?.toList(),
-      'js': instance.js,
-      'mode': _$DyteModeEnumMap[instance.mode],
       'logLevel': _$DyteLogLevelEnumMap[instance.logLevel],
+      'hmr': instance.hmr,
+      'js': instance.js,
       'experimental': instance.experimental,
       'multiPackages': instance.multiPackages,
-      'hmr': instance.hmr,
     };
 
 const _$DyteModeEnumMap = {
@@ -116,14 +116,14 @@ DyteBuildOptions _$DyteBuildOptionsFromJson(Map<String, dynamic> json) =>
     DyteBuildOptions(
       outdir: json['outdir'] as String?,
       bundleAsJs: json['bundleAsJs'] as bool?,
-      bundleWithTypes: json['bundleWithTypes'] as bool?,
+      minify: json['minify'] as bool?,
     );
 
 Map<String, dynamic> _$DyteBuildOptionsToJson(DyteBuildOptions instance) =>
     <String, dynamic>{
       'outdir': instance.outdir,
       'bundleAsJs': instance.bundleAsJs,
-      'bundleWithTypes': instance.bundleWithTypes,
+      'minify': instance.minify,
     };
 
 DyteJSOptions _$DyteJSOptionsFromJson(Map<String, dynamic> json) =>
