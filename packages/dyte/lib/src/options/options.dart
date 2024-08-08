@@ -1,4 +1,4 @@
-import 'package:dyte/src/bundler/project.dart';
+import '../serve/project.dart';
 import 'package:dyte/src/config/dyte_config.dart';
 import 'package:path/path.dart';
 
