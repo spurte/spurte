@@ -1,16 +1,16 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:dyte/dyte.dart';
-import 'package:dyte/src/config/internal/server_config.dart';
-import 'package:dyte/src/config_file.dart';
-import 'package:dyte/src/options/options.dart';
-import 'package:dyte/src/parser/parser.dart';
-import 'package:dyte/src/plugin.dart';
-import 'package:dyte/src/serve.dart';
-import 'package:package_config/package_config.dart';
 
-import 'base/command.dart';
+import 'package:package_config/package_config.dart';
 import 'package:path/path.dart' as p;
+
+import '../config/config.dart';
+import '../config/internal/server_config.dart';
+import '../config_file.dart';
+import '../options/options.dart';
+import '../plugin.dart';
+import '../serve.dart';
+import 'base/command.dart';
 
 class RunCommand extends DyteCommand {
   @override
@@ -54,18 +54,12 @@ class RunCommand extends DyteCommand {
     // get configuration
     final config = mergeConfig(getConfiguration(projectDir, name: "dyte"), defaultConfig(DyteMode.development, projectDir.path));
 
-    final stopwatch = Stopwatch();
-    stopwatch.start();
-
     // run plugins
     try {
       await runPlugins(config.plugins?.toList() ?? [], projectDir, config: getConfigFile(projectDir, "dyte"));
     } catch (e) {
       logger.error(e.toString(), error: true);
-      // exit(1);
-    } finally {
-      stopwatch.stop();
-      print(stopwatch.elapsed.inSeconds);
+      exit(1);
     }
 
     // create server options from configuration
@@ -81,10 +75,4 @@ class RunCommand extends DyteCommand {
 
     server.repl(webServer.server);
   }
-}
-
-DyteConfig getConfiguration(Directory dir, {required String name, String? config}) {
-  String file = getConfigFile(dir, name);
-  
-  return parseConfig(file);
 }
