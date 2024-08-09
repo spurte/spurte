@@ -20,11 +20,18 @@ ArgParser buildParser() {
       'version',
       negatable: false,
       help: 'Print the tool version.',
-    );
+    )
+    ..addOption(
+      'template',
+      abbr: 't',
+      help: 'Provide the template to use for the given project',
+      allowed: ["vanilla"]
+    )
+    ;
 }
 
 void printUsage(ArgParser argParser) {
-  print('Usage: dart create_dyte.dart <flags> [arguments]');
+  print('Usage: create_dyte <flags> [arguments]');
   print(argParser.usage);
 }
 
