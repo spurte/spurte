@@ -6,6 +6,6 @@ void main(List<String> args) {
   print(random);
 
   final element = document.createElement("div");
-  element.innerHTML = "Hello Dart from Dyte!";
+  element.innerHTML = "Hello Dart from Spurte!";
   document.body?.append(element);
 }

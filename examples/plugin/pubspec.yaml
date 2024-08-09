@@ -1,10 +1,10 @@
-name: dyte_example_plugin
+name: spurte_example_plugin
 
 environment:
   sdk: ^3.3.0
 
 dev_dependencies:
-  dyte: ^0.1.0
+  spurte: ^0.1.0
   lints: ^4.0.0
 dependencies:
   web: ^0.5.1

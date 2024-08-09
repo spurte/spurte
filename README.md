@@ -1,3 +1,3 @@
-# Dyte - Universal Frontend Tooling
+# Spurte - Universal Frontend Tooling
 
-This is the dyte frontend tool implemented in the [dart programming language](https://dart.dev).
+This is the spurte frontend tool implemented in the [dart programming language](https://dart.dev).
