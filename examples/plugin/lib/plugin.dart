@@ -16,11 +16,13 @@ final plugin = SpurtePlugin(
           final parts = e.split(": ");
           return "final ${parts[0]} = ${parts[1]};";
         });
+        // return for text id
         return SpurtePluginResult(
           src: srclines.join("\n\n"),
           path: options?.path.replaceFirst(".txt", ".g.dart")
         );
       default:
+        // return default
         return SpurtePluginResult();
     }
   },
