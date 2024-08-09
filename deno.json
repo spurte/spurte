@@ -1,6 +1,0 @@
-{
-    "tasks": {
-        "dev": "dart run packages/spurte/bin/spurte.dart",
-        "dev:basic": "dart run packages/spurte/bin/spurte.dart run examples/basic"
-    }
-}
