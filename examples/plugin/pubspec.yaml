@@ -6,5 +6,6 @@ environment:
 dev_dependencies:
   spurte: ^0.1.0
   lints: ^4.0.0
+
 dependencies:
   web: ^0.5.1
