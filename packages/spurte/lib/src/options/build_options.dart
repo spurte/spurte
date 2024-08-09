@@ -13,6 +13,7 @@ class BuildOptions {
   final String index;
   final String publicDir;
   final String publicRoot;
+  final bool verbose;
 
   const BuildOptions({
     this.wasm = false,
@@ -24,6 +25,7 @@ class BuildOptions {
     this.exportFile,
     this.entrypoints = const [],
     this.publicDir = 'public',
-    this.publicRoot = '/'
+    this.publicRoot = '/',
+    this.verbose = false
   });
 }

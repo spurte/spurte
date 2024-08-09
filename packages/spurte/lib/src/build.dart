@@ -48,6 +48,12 @@ class DartJSBuilder implements DartBuilder {
       exit(result.exitCode);
     }
 
+    // post build process
+    if (!options.verbose) {
+      await File(p.join(options.cwd, options.dist, '${p.basename(entrypoint)}.js.deps')).delete();
+      await File(p.join(options.cwd, options.dist, '${p.basename(entrypoint)}.js.map')).delete();
+    }
+
     return DartBuilderResult._(packages: pkgMap);
   }
   
@@ -102,33 +108,44 @@ Future<void> build(BuildOptions options) async {
   DartBuilderResult b;
   bool bInit = false;
 
+  // cleanup previous builds
+  var buildDirectory = Directory(p.join(options.cwd, options.dist));
+  if (buildDirectory.existsSync()) {
+    await buildDirectory.delete(recursive: true);
+  }
+
   // build entrypoint
   for (String e in entrypoints) {
     b = await builder.build(e, options);
     if (!bInit) {
       bInit = true;
-      File(p.join(options.cwd, options.dist, '.metadata')).writeAsStringSync(b.packages.entries.map((e) => "${e.key}:${e.value}").join("\n"));
+      File(p.join(options.cwd, options.dist, '.packages')).writeAsStringSync(b.packages.entries.map((e) => "${e.key}:${e.value}").join("\n"));
     }
   }
 
   // copy html file 
   var indexPath = p.isRelative(options.index) ? p.join(options.cwd, options.index) : options.index;
-  File(indexPath).copySync(p.join(options.cwd, options.dist, p.relative(indexPath, from: options.cwd)));
+  var index = await File(indexPath).readAsString();
+
+  index = index.replaceAll('web/', '/');
+  File(p.join(options.cwd, options.dist, p.relative(indexPath, from: options.cwd))).writeAsString(index);
 
   // copy all public assets in the public directory at the root of the directory
   final publicDir = Directory(p.join(options.cwd, options.publicDir));
 
-  await for (final publicFile in publicDir.list(recursive: true)) {
-    if (publicFile is File) {
-      var substring = options.publicRoot.substring(0, options.publicRoot.length);
-      await publicFile.copy(
-        p.join(
-          options.cwd, 
-          options.dist, 
-          substring == "" || substring == "/" ? "." : substring, 
-          p.relative(publicFile.absolute.path, from: p.join(options.cwd, options.publicDir))
-        )
-      );
+  if (await publicDir.exists()) {
+    await for (final publicFile in publicDir.list(recursive: true)) {
+      if (publicFile is File) {
+        var substring = options.publicRoot.substring(0, options.publicRoot.length);
+        await publicFile.copy(
+          p.join(
+            options.cwd, 
+            options.dist, 
+            substring == "" || substring == "/" ? "." : substring, 
+            p.relative(publicFile.absolute.path, from: p.join(options.cwd, options.publicDir))
+          )
+        );
+      }
     }
   }
 
