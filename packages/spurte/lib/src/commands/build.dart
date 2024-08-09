@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:package_config/package_config.dart';
 import 'package:path/path.dart' as p;
 
+import '../build.dart';
+import '../options/options.dart';
 import '../config/config.dart';
 import '../config/internal/server_config.dart';
 import '../config_file.dart';
@@ -61,6 +63,11 @@ class BuildCommand extends SpurteCommand {
     }
 
     // get build options
-    
+    final options = createBuildOptions(config, projectDir.path);
+
+    logger.info("Building for production...");
+    await build(options);
+
+    logger.fine("Done Building!");
   }
 }

@@ -1,29 +1,17 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:package_config/package_config.dart';
 import 'package:path/path.dart' as p;
 
-class BuildOptions {
-  final bool wasm;
-  final bool minify;
-  final String cwd;
-  final String dist;
-
-  const BuildOptions({
-    this.wasm = false,
-    this.minify = true,
-    required this.cwd,
-    this.dist = "dist",
-  });
-}
+import 'options/build_options.dart';
+import 'build/wasm_entry.dart';
 
 class DartBuilderResult {
-  final String output;
   final Map<String, String> packages;
   final Map<String, String> otherFiles;
 
   const DartBuilderResult._({
-    required this.output,
     this.packages = const {},
     this.otherFiles = const {},
   });
@@ -34,22 +22,33 @@ abstract class DartBuilder {
 
   List<String> get args;
   
-  FutureOr<void> build(String entrypoint, BuildOptions options);
+  /// [entrypoint] must be a relative path from the project directory specified in [options] ([BuildOptions.cwd])
+  FutureOr<DartBuilderResult> build(String entrypoint, BuildOptions options);
 }
 
 class DartJSBuilder implements DartBuilder {
   @override
-  void build(String entrypoint, BuildOptions options) async {
-    final addArgs = ["--multi-root-scheme=org-dartlang-sdk", "--packages=${p.join(options.cwd, '.dart_tool', 'package_config.json')}"];
-    if (options.minify) addArgs.add('--O2');
-    addArgs.addAll(['-o${p.join(options.dist, p.basename(entrypoint))}.js', entrypoint]);
+  Future<DartBuilderResult> build(String entrypoint, BuildOptions options) async {
+    final addArgs = [
+      "--multi-root-scheme=org-dartlang-sdk", 
+      "--packages=${p.join(options.cwd, '.dart_tool', 'package_config.json')}",
+      if (options.minify) '-O2',
+      '-o${p.join(options.dist, p.basename(entrypoint))}.js', entrypoint
+    ];
 
+    final packageConfig = await findPackageConfig(Directory(options.cwd));
+    final packages = packageConfig?.packages ?? [];
+    final pkgMap = { for (var e in packages) e.name :'/packages/${e.name}' };
+
+    // compile project
     final result = await Process.run(exec, [...args, ...addArgs], workingDirectory: options.cwd);
 
     if (result.exitCode != 0) {
-      print("Failed to compile the dart sdk: \n${result.stdout}\n${result.stderr}");
+      print("Failed to compile the program: \n${result.stdout}\n${result.stderr}");
       exit(result.exitCode);
     }
+
+    return DartBuilderResult._(packages: pkgMap);
   }
   
   @override
@@ -61,32 +60,77 @@ class DartJSBuilder implements DartBuilder {
 
 class DartWasmBuilder implements DartBuilder {
   @override
-  List<String> get args => ["compile", "js"];
+  List<String> get args => ["compile", "wasm"];
   
   @override
   String get exec => Platform.executable;
 
   @override
-  void build(String entrypoint, BuildOptions options) async {
-    final addArgs = ["--multi-root-scheme=org-dartlang-sdk", "--packages=${p.join(options.cwd, '.dart_tool', 'package_config.json')}"];
-    if (options.minify) addArgs.add('--O2');
-    addArgs.addAll(['-o${p.join(options.dist, p.basename(entrypoint))}.js', entrypoint]);
+  Future<DartBuilderResult> build(String entrypoint, BuildOptions options) async {
+    final addArgs = [
+      "--packages=${p.join(options.cwd, '.dart_tool', 'package_config.json')}",
+      if (options.minify) '-O2',
+      '-o${p.join(options.dist, p.basename(entrypoint))}.js', entrypoint
+    ];
+
+    final packageConfig = await findPackageConfig(Directory(options.cwd));
+    final packages = packageConfig?.packages ?? [];
+    final pkgMap = { for (var e in packages) e.name :'/packages/${e.name}' };
 
     final result = await Process.run(exec, [...args, ...addArgs], workingDirectory: options.cwd);
 
     if (result.exitCode != 0) {
-      print("Failed to compile the dart sdk: \n${result.stdout}\n${result.stderr}");
+      print("Failed to compile the program: \n${result.stdout}\n${result.stderr}");
       exit(result.exitCode);
     }
+
+    // post build
+    await writeWasm(
+      p.basenameWithoutExtension(entrypoint), 
+      Directory(p.join(options.cwd, options.dist)),
+      options.importFile, options.exportFile
+    );
+
+    return DartBuilderResult._(packages: pkgMap);
   }
 }
 
-build(BuildOptions options) {
+Future<void> build(BuildOptions options) async {
   // get entrypoint
+  final entrypoints = options.entrypoints;
+  final builder = options.wasm ? DartWasmBuilder() : DartJSBuilder();
+  DartBuilderResult b;
+  bool bInit = false;
 
   // build entrypoint
+  for (String e in entrypoints) {
+    b = await builder.build(e, options);
+    if (!bInit) {
+      bInit = true;
+      File(p.join(options.cwd, options.dist, '.metadata')).writeAsStringSync(b.packages.entries.map((e) => "${e.key}:${e.value}").join("\n"));
+    }
+  }
 
   // copy html file 
+  var indexPath = p.isRelative(options.index) ? p.join(options.cwd, options.index) : options.index;
+  File(indexPath).copySync(p.join(options.cwd, options.dist, p.relative(indexPath, from: options.cwd)));
 
   // copy all public assets in the public directory at the root of the directory
+  final publicDir = Directory(p.join(options.cwd, options.publicDir));
+
+  await for (final publicFile in publicDir.list(recursive: true)) {
+    if (publicFile is File) {
+      var substring = options.publicRoot.substring(0, options.publicRoot.length);
+      await publicFile.copy(
+        p.join(
+          options.cwd, 
+          options.dist, 
+          substring == "" || substring == "/" ? "." : substring, 
+          p.relative(publicFile.absolute.path, from: p.join(options.cwd, options.publicDir))
+        )
+      );
+    }
+  }
+
+  print("Build written to ${options.dist}");
 }

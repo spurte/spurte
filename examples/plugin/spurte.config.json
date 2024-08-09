@@ -1,4 +1,5 @@
 {
+  "$schema": "https://spurte.github.io/schema/dart/openapi.json",
   "plugins": [
     "lib/plugin.dart"
   ]
