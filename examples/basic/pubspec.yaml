@@ -1,9 +1,9 @@
-name: dyte_example_basic
+name: spurte_example_basic
 
 environment:
   sdk: ^3.3.0
 
 dev_dependencies:
-  dyte: ^0.1.0
+  spurte: ^0.1.0
 dependencies:
   web: ^0.5.1

@@ -1,3 +1,3 @@
 dependency_overrides:
-  dyte:
-    path: ../../packages/dyte
+  spurte:
+    path: ../../packages/spurte

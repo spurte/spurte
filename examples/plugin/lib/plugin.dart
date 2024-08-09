@@ -1,6 +1,6 @@
-import 'package:dyte/dyte.dart';
+import 'package:spurte/spurte.dart';
 
-final plugin = DytePlugin(
+final plugin = SpurtePlugin(
   resolve: (id) {
     if (id.name.endsWith(".txt")) {
       return "text";
@@ -16,12 +16,12 @@ final plugin = DytePlugin(
           final parts = e.split(": ");
           return "final ${parts[0]} = ${parts[1]};";
         });
-        return DytePluginResult(
+        return SpurtePluginResult(
           src: srclines.join("\n\n"),
           path: options?.path.replaceFirst(".txt", ".g.dart")
         );
       default:
-        return DytePluginResult();
+        return SpurtePluginResult();
     }
   },
 );
