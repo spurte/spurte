@@ -12,9 +12,9 @@ import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart' as io;
 
 import 'options/server_options.dart';
-import 'serve/dartdevc.dart';
-import 'serve/common.dart';
-import 'serve/dart2js.dart';
+import 'serve/client/dartdevc.dart';
+import 'serve/client/common.dart';
+import 'serve/client/dart2js.dart';
 
 class SpurteServerResult {
   final HttpServer _server;

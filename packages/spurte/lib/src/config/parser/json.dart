@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import '../config/config.dart';
+import '../config.dart';
 
 SpurteConfig parseConfig(String path) {
   try {

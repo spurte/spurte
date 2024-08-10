@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'config/config.dart';
-import 'parser/parser.dart';
+import 'config/parser/parser.dart';
 import 'package:path/path.dart' as p;
 
 String getConfigFile(Directory dir, String name) {
