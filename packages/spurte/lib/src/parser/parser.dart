@@ -1,7 +1,7 @@
 
 import 'package:path/path.dart' as p;
 
-import '../config/spurte_config.dart';
+import '../config/config.dart';
 
 import 'json.dart' as json;
 import 'yaml.dart' as yaml;

@@ -1,9 +1,9 @@
-import '../serve/project.dart';
-import 'package:spurte/src/config/spurte_config.dart';
 import 'package:path/path.dart';
 
 import 'server_options.dart';
 import 'build_options.dart';
+import '../serve/project.dart';
+import '../config/config.dart';
 
 export 'server_options.dart';
 export 'build_options.dart';

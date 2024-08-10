@@ -3,5 +3,5 @@ library spurte.build;
 
 export 'src/plugins/resolver.dart';
 export 'src/plugins/plugins.dart';
-export 'src/config/spurte_config.dart' show SpurteConfig;
+export 'src/schema/config.dart' show SpurteConfig;
 export 'src/api/plugin.dart';

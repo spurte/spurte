@@ -1,7 +1,8 @@
 import 'dart:io';
 
-import 'package:spurte/src/config/spurte_config.dart';
 import 'package:yaml/yaml.dart';
+
+import '../config/config.dart';
 
 SpurteConfig parseConfig(String path) {
   Map<String, dynamic> config;

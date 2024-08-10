@@ -1,16 +1,14 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:io';
+
 import 'package:package_config/package_config.dart';
 import 'package:path/path.dart' as p;
-import 'package:spurte/src/cli/shared.dart';
-import 'package:spurte/src/commands/build.dart';
-import 'package:spurte/src/config/config.dart';
-import 'package:spurte/src/config/config.dart';
-import 'package:spurte/src/config/internal/server_config.dart';
-import 'package:spurte/src/config_file.dart';
-import 'package:spurte/src/utils/logger.dart';
-import 'package:spurte/src/utils/runner.dart';
+
+import '../config/config.dart';
+import '../config/internal/server_config.dart';
+import '../config_file.dart';
+import '../utils/logger.dart';
+import '../utils/runner.dart';
 
 Future<SpurteCommandResult> preCommand(List<String> args, SpurteLogger logger, SpurteRunner runner) async {
     // get directory
@@ -44,7 +42,7 @@ Future<SpurteCommandResult> preCommand(List<String> args, SpurteLogger logger, S
     }
 
     // get configuration
-    final config = mergeConfig(getConfiguration(projectDir, name: "spurte"), defaultConfig(SpurteMode.development, projectDir.path));
+    final config = mergeConfig(getConfiguration(projectDir, name: "spurte"), defaultConfig(SpurteMode.DEVELOPMENT, projectDir.path));
 
     return SpurteCommandResult(
       config: config,

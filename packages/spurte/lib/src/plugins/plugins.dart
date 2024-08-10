@@ -2,8 +2,8 @@
 
 import 'dart:async';
 
-import 'package:spurte/src/api/plugin.dart';
-import 'package:spurte/src/config/spurte_config.dart';
+import '../api/plugin.dart';
+import '../config/config.dart';
 
 class SpurteApp {
   List<SpurtePlugin> plugins;
@@ -11,7 +11,7 @@ class SpurteApp {
 
   SpurteApp({
     this.plugins = const [],
-    this.config = const SpurteConfig()
+    required this.config
   });
 }
 

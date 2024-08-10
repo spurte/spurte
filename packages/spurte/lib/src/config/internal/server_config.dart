@@ -1,4 +1,4 @@
-import '../spurte_config.dart';
+import '../config.dart';
 
 /// Generates default Spurte Config in the case there is none anymore
 SpurteConfig defaultConfig(SpurteMode mode, String cwd) {
@@ -9,6 +9,6 @@ SpurteConfig defaultConfig(SpurteMode mode, String cwd) {
     publicDir: "public",
     server: SpurteServerOptions(port: 8000, host: "localhost"),
     dev: SpurteDevOptions(bundleJsDeps: true),
-    build: SpurteBuildOptions(outdir: "build"),
+    build: SpurteDartBuildOptions(outdir: "build"),
   );
 }

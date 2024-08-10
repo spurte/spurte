@@ -1,8 +1,8 @@
 library spurte.config;
 
-import 'spurte_config.dart';
+import '../schema/config.dart';
 
-export 'spurte_config.dart';
+export '../schema/config.dart';
 
 /// Public function used for defining configuration in a `spurte.config.dart` file.
 ///
@@ -23,14 +23,13 @@ SpurteConfig defineConfig({
   String? base,
   SpurteMode? mode,
   SpurteLogLevel? logLevel,
-  SpurteExperimentalOptions? experimental,
-  bool? multiPackages,
+  SpurteDartExperimentalOptions? experimental,
   bool? hmr,
-  SpurteJSOptions? js,
+  SpurteJsDartOptions? js,
   String? publicDir,
   SpurteServerOptions? server,
   SpurteDevOptions? dev,
-  SpurteBuildOptions? build,
+  SpurteDartBuildOptions? build,
   String? pubspec,
   List<String>? plugins,
   String? publicRoot,
@@ -48,7 +47,6 @@ SpurteConfig defineConfig({
     plugins: plugins,
     logLevel: logLevel,
     experimental: experimental,
-    multiPackages: multiPackages,
     hmr: hmr,
     publicRoot: publicRoot,
     root: root,
@@ -74,7 +72,6 @@ SpurteConfig mergeConfig(SpurteConfig superior, SpurteConfig inferior) {
     plugins: superior.plugins ?? inferior.plugins,
     logLevel: superior.logLevel ?? inferior.logLevel,
     experimental: superior.experimental ?? inferior.experimental,
-    multiPackages: superior.multiPackages ?? inferior.multiPackages,
     hmr: superior.hmr ?? inferior.hmr,
     publicRoot: superior.publicRoot ?? inferior.publicRoot,
     root: superior.root ?? inferior.root,

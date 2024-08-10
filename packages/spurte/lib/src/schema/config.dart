@@ -11,7 +11,10 @@
 //
 //     final spurteConfig = spurteConfigFromJson(jsonString);
 
+import 'package:json_annotation/json_annotation.dart';
 import 'dart:convert';
+
+part 'config.g.dart';
 
 SpurteConfig spurteConfigFromJson(String str) => SpurteConfig.fromJson(json.decode(str));
 
@@ -21,63 +24,79 @@ String spurteConfigToJson(SpurteConfig data) => json.encode(data.toJson());
 ///The configuration options for the Spurte Dart implementation.
 ///
 ///This extends the common options, with implementation-specific options.
+@JsonSerializable()
 class SpurteConfig {
     
     ///The base url of the spurte project.
-    String? base;
+    @JsonKey(name: "base")
+    final String? base;
     
     ///Options for customizing building the project
-    SpurteDartBuildOptions? build;
+    @JsonKey(name: "build")
+    final SpurteDartBuildOptions? build;
     
     ///Development options, used for customizing development as well as for other dev options.
-    SpurteDevOptions? dev;
+    @JsonKey(name: "dev")
+    final SpurteDevOptions? dev;
     
     ///The main entrypoint of the application
-    String? entry;
+    @JsonKey(name: "entry")
+    final String? entry;
     
     ///Experimental options for working with Spurte
-    SpurteDartExperimentalOptions experimental;
+    @JsonKey(name: "experimental")
+    final SpurteDartExperimentalOptions? experimental;
     
     ///Whether hot module replacement is active on the given project
     ///
     ///Defaults to true
-    bool? hmr;
+    @JsonKey(name: "hmr")
+    final bool? hmr;
     
     ///Options used for configuring the use of JavaScript projects and dependencies in the
     ///Spurte Project
-    SpurteJsDartOptions? js;
+    @JsonKey(name: "js")
+    final SpurteJsDartOptions? js;
     
     ///The logging level for the spurte server
-    SpurteLogLevel? logLevel;
+    @JsonKey(name: "logLevel")
+    final SpurteLogLevel? logLevel;
     
     ///Explicitly set the mode and overwrite the default mode or mode passed via the command
     ///line.
-    SpurteMode? mode;
+    @JsonKey(name: "mode")
+    final SpurteMode? mode;
     
     ///The list of plugins provided for this project, either as a file path or as a package uri
-    List<String>? plugins;
+    @JsonKey(name: "plugins")
+    final List<String>? plugins;
     
     ///The public directory to use for serving public assets. Defaults to `public/`
-    String? publicDir;
+    @JsonKey(name: "publicDir")
+    final String? publicDir;
     
     ///The base url to serve public assets at. Defaults to `/`
-    String? publicRoot;
+    @JsonKey(name: "publicRoot")
+    final String? publicRoot;
     
     ///The path to the pubspec file used for dart configuration. Defaults to the project root
-    String? pubspec;
+    @JsonKey(name: "pubspec")
+    final String? pubspec;
     
     ///The root of the spurte project. Defaults to the current working directory
-    String? root;
+    @JsonKey(name: "root")
+    final String? root;
     
     ///Configure the server options for Spurte's development server
-    SpurteServerOptions? server;
+    @JsonKey(name: "server")
+    final SpurteServerOptions? server;
 
     SpurteConfig({
         this.base,
         this.build,
         this.dev,
         this.entry,
-        required this.experimental,
+        this.experimental,
         this.hmr,
         this.js,
         this.logLevel,
@@ -90,61 +109,33 @@ class SpurteConfig {
         this.server,
     });
 
-    factory SpurteConfig.fromJson(Map<String, dynamic> json) => SpurteConfig(
-        base: json["base"],
-        build: json["build"] == null ? null : SpurteDartBuildOptions.fromJson(json["build"]),
-        dev: json["dev"] == null ? null : SpurteDevOptions.fromJson(json["dev"]),
-        entry: json["entry"],
-        experimental: SpurteDartExperimentalOptions.fromJson(json["experimental"]),
-        hmr: json["hmr"],
-        js: json["js"] == null ? null : SpurteJsDartOptions.fromJson(json["js"]),
-        logLevel: spurteLogLevelValues.map[json["logLevel"]]!,
-        mode: spurteModeValues.map[json["mode"]]!,
-        plugins: json["plugins"] == null ? [] : List<String>.from(json["plugins"]!.map((x) => x)),
-        publicDir: json["publicDir"],
-        publicRoot: json["publicRoot"],
-        pubspec: json["pubspec"],
-        root: json["root"],
-        server: json["server"] == null ? null : SpurteServerOptions.fromJson(json["server"]),
-    );
+    factory SpurteConfig.fromJson(Map<String, dynamic> json) => _$SpurteConfigFromJson(json);
 
-    Map<String, dynamic> toJson() => {
-        "base": base,
-        "build": build?.toJson(),
-        "dev": dev?.toJson(),
-        "entry": entry,
-        "experimental": experimental.toJson(),
-        "hmr": hmr,
-        "js": js?.toJson(),
-        "logLevel": spurteLogLevelValues.reverse[logLevel],
-        "mode": spurteModeValues.reverse[mode],
-        "plugins": plugins == null ? [] : List<dynamic>.from(plugins!.map((x) => x)),
-        "publicDir": publicDir,
-        "publicRoot": publicRoot,
-        "pubspec": pubspec,
-        "root": root,
-        "server": server?.toJson(),
-    };
+    Map<String, dynamic> toJson() => _$SpurteConfigToJson(this);
 }
 
 
 ///Options for customizing building the project
+@JsonSerializable()
 class SpurteDartBuildOptions {
     
     ///Whether to bundle the project with JS
     ///
     ///Defaults to `true`
-    bool? bundleAsJs;
+    @JsonKey(name: "bundleAsJs")
+    final bool? bundleAsJs;
     
     ///Whether to minify output
     ///
     ///Defaults to `true`
-    bool? minify;
+    @JsonKey(name: "minify")
+    final bool? minify;
     
     ///The output directory for the build files
     ///
     ///Defaults to the `dist/` directory
-    String? outdir;
+    @JsonKey(name: "outdir")
+    final String? outdir;
 
     SpurteDartBuildOptions({
         this.bundleAsJs,
@@ -152,51 +143,41 @@ class SpurteDartBuildOptions {
         this.outdir,
     });
 
-    factory SpurteDartBuildOptions.fromJson(Map<String, dynamic> json) => SpurteDartBuildOptions(
-        bundleAsJs: json["bundleAsJs"],
-        minify: json["minify"],
-        outdir: json["outdir"],
-    );
+    factory SpurteDartBuildOptions.fromJson(Map<String, dynamic> json) => _$SpurteDartBuildOptionsFromJson(json);
 
-    Map<String, dynamic> toJson() => {
-        "bundleAsJs": bundleAsJs,
-        "minify": minify,
-        "outdir": outdir,
-    };
+    Map<String, dynamic> toJson() => _$SpurteDartBuildOptionsToJson(this);
 }
 
 
 ///Development options, used for customizing development as well as for other dev options.
+@JsonSerializable()
 class SpurteDevOptions {
     
     ///Whether to bundle external dependencies or import them as-is.
     ///
     ///Defaults to true, meaning url dependencies are bundled.
-    bool? bundleJsDeps;
+    @JsonKey(name: "bundleJSDeps")
+    final bool? bundleJsDeps;
     
     ///Whether to initiate a full reload upon receiving changes
     ///
     ///Defaults to false
-    bool? fullReload;
+    @JsonKey(name: "fullReload")
+    final bool? fullReload;
 
     SpurteDevOptions({
         this.bundleJsDeps,
         this.fullReload,
     });
 
-    factory SpurteDevOptions.fromJson(Map<String, dynamic> json) => SpurteDevOptions(
-        bundleJsDeps: json["bundleJSDeps"],
-        fullReload: json["fullReload"],
-    );
+    factory SpurteDevOptions.fromJson(Map<String, dynamic> json) => _$SpurteDevOptionsFromJson(json);
 
-    Map<String, dynamic> toJson() => {
-        "bundleJSDeps": bundleJsDeps,
-        "fullReload": fullReload,
-    };
+    Map<String, dynamic> toJson() => _$SpurteDevOptionsToJson(this);
 }
 
 
 ///Experimental options for working with Spurte
+@JsonSerializable()
 class SpurteDartExperimentalOptions {
     
     ///Whether to add types to the bundled JS files
@@ -205,10 +186,12 @@ class SpurteDartExperimentalOptions {
     ///is ignored.
     ///
     ///> **NOTE**: This option is experimental, and doesn't work at the moment
-    bool? bundleWithTypes;
+    @JsonKey(name: "bundleWithTypes")
+    final bool? bundleWithTypes;
     
     ///The build target for the given project - "js" or "wasm"
-    SpurteDartBuildTarget? target;
+    @JsonKey(name: "target")
+    final SpurteDartBuildTarget? target;
     
     ///WASM options
     ///
@@ -219,7 +202,8 @@ class SpurteDartExperimentalOptions {
     ///
     ///For more information on how to use wasm with dart, see https://dart.dev/web/wasm and
     ///https://chromium.googlesource.com/external/github.com/dart-lang/sdk/+/refs/tags/3.5.0-90.0.dev/pkg/dart2wasm/
-    SpurteDartWasmOptions? wasm;
+    @JsonKey(name: "wasm")
+    final SpurteDartWasmOptions? wasm;
 
     SpurteDartExperimentalOptions({
         this.bundleWithTypes,
@@ -227,23 +211,17 @@ class SpurteDartExperimentalOptions {
         this.wasm,
     });
 
-    factory SpurteDartExperimentalOptions.fromJson(Map<String, dynamic> json) => SpurteDartExperimentalOptions(
-        bundleWithTypes: json["bundleWithTypes"],
-        target: spurteDartBuildTargetValues.map[json["target"]]!,
-        wasm: json["wasm"] == null ? null : SpurteDartWasmOptions.fromJson(json["wasm"]),
-    );
+    factory SpurteDartExperimentalOptions.fromJson(Map<String, dynamic> json) => _$SpurteDartExperimentalOptionsFromJson(json);
 
-    Map<String, dynamic> toJson() => {
-        "bundleWithTypes": bundleWithTypes,
-        "target": spurteDartBuildTargetValues.reverse[target],
-        "wasm": wasm?.toJson(),
-    };
+    Map<String, dynamic> toJson() => _$SpurteDartExperimentalOptionsToJson(this);
 }
 
 
 ///The build target for the given project - "js" or "wasm"
 enum SpurteDartBuildTarget {
+    @JsonValue("js")
     JS,
+    @JsonValue("wasm")
     WASM
 }
 
@@ -262,56 +240,58 @@ final spurteDartBuildTargetValues = EnumValues({
 ///
 ///For more information on how to use wasm with dart, see https://dart.dev/web/wasm and
 ///https://chromium.googlesource.com/external/github.com/dart-lang/sdk/+/refs/tags/3.5.0-90.0.dev/pkg/dart2wasm/
+@JsonSerializable()
 class SpurteDartWasmOptions {
     
     ///A file that can be used to make use of WASM exports, if any, from the module
     ///
     ///If no wasm exports are made, then this file is not included in the build
-    String? exportFile;
+    @JsonKey(name: "exportFile")
+    final String? exportFile;
     
     ///The file that includes the import object
     ///
     ///The import object here should be provided as a default export from the given file.
     ///Support for using dart to export such import object is not yet implemented
-    String? importFile;
+    @JsonKey(name: "importFile")
+    final String? importFile;
 
     SpurteDartWasmOptions({
         this.exportFile,
         this.importFile,
     });
 
-    factory SpurteDartWasmOptions.fromJson(Map<String, dynamic> json) => SpurteDartWasmOptions(
-        exportFile: json["exportFile"],
-        importFile: json["importFile"],
-    );
+    factory SpurteDartWasmOptions.fromJson(Map<String, dynamic> json) => _$SpurteDartWasmOptionsFromJson(json);
 
-    Map<String, dynamic> toJson() => {
-        "exportFile": exportFile,
-        "importFile": importFile,
-    };
+    Map<String, dynamic> toJson() => _$SpurteDartWasmOptionsToJson(this);
 }
 
 
 ///Options used for configuring the use of JavaScript projects and dependencies in the
 ///Spurte Project
+@JsonSerializable()
 class SpurteJsDartOptions {
     
     ///The CDN to use to cache NPM dependencies during development.
     ///Defaults to undefined for Spurte's own NPM dependency management.
     ///
     ///if `nodeModulesDir` is true, this option is ignored
-    String? cdn;
+    @JsonKey(name: "cdn")
+    final String? cdn;
     
     ///Whether deno is used in the given project
     ///
     ///If not defined, this can be inferred through the use of a `deno.json` file in the project
-    bool? deno;
+    @JsonKey(name: "deno")
+    final bool? deno;
     
     ///Whether JSX is being used in this project
-    bool? jsx;
+    @JsonKey(name: "jsx")
+    final bool? jsx;
     
     ///Whether to make use of a `node_modules` directory
-    bool? nodeModulesDir;
+    @JsonKey(name: "nodeModulesDir")
+    final bool? nodeModulesDir;
     
     ///The package manager used to install the node modules, if any.
     ///
@@ -320,10 +300,12 @@ class SpurteJsDartOptions {
     ///Else this defaults to "npm"
     ///
     ///if `nodeModulesDir` is undefined or false, this option is ignored.
-    PackageManager? packageManager;
+    @JsonKey(name: "packageManager")
+    final PackageManager? packageManager;
     
     ///Whether typescript is being used in this project
-    bool? typescript;
+    @JsonKey(name: "typescript")
+    final bool? typescript;
 
     SpurteJsDartOptions({
         this.cdn,
@@ -334,23 +316,9 @@ class SpurteJsDartOptions {
         this.typescript,
     });
 
-    factory SpurteJsDartOptions.fromJson(Map<String, dynamic> json) => SpurteJsDartOptions(
-        cdn: json["cdn"],
-        deno: json["deno"],
-        jsx: json["jsx"],
-        nodeModulesDir: json["nodeModulesDir"],
-        packageManager: packageManagerValues.map[json["packageManager"]]!,
-        typescript: json["typescript"],
-    );
+    factory SpurteJsDartOptions.fromJson(Map<String, dynamic> json) => _$SpurteJsDartOptionsFromJson(json);
 
-    Map<String, dynamic> toJson() => {
-        "cdn": cdn,
-        "deno": deno,
-        "jsx": jsx,
-        "nodeModulesDir": nodeModulesDir,
-        "packageManager": packageManagerValues.reverse[packageManager],
-        "typescript": typescript,
-    };
+    Map<String, dynamic> toJson() => _$SpurteJsDartOptionsToJson(this);
 }
 
 
@@ -362,9 +330,13 @@ class SpurteJsDartOptions {
 ///
 ///if `nodeModulesDir` is undefined or false, this option is ignored.
 enum PackageManager {
+    @JsonValue("bun")
     BUN,
+    @JsonValue("npm")
     NPM,
+    @JsonValue("pnpm")
     PNPM,
+    @JsonValue("yarn")
     YARN
 }
 
@@ -378,10 +350,15 @@ final packageManagerValues = EnumValues({
 
 ///The logging level for the spurte server
 enum SpurteLogLevel {
+    @JsonValue("debug")
     DEBUG,
+    @JsonValue("error")
     ERROR,
+    @JsonValue("info")
     INFO,
+    @JsonValue("none")
     NONE,
+    @JsonValue("warn")
     WARN
 }
 
@@ -397,7 +374,9 @@ final spurteLogLevelValues = EnumValues({
 ///Explicitly set the mode and overwrite the default mode or mode passed via the command
 ///line.
 enum SpurteMode {
+    @JsonValue("development")
     DEVELOPMENT,
+    @JsonValue("production")
     PRODUCTION
 }
 
@@ -408,16 +387,20 @@ final spurteModeValues = EnumValues({
 
 
 ///Configure the server options for Spurte's development server
+@JsonSerializable()
 class SpurteServerOptions {
     
     ///The server hostname. Defaults to "localhost"
-    String? host;
+    @JsonKey(name: "host")
+    final String? host;
     
     ///HTTPS information that, when provided, can be used for creating a https server
-    SpurteServerHttpsOptions? https;
+    @JsonKey(name: "https")
+    final SpurteServerHttpsOptions? https;
     
     ///The server port number. Defaults to 8000
-    int? port;
+    @JsonKey(name: "port")
+    final int? port;
 
     SpurteServerOptions({
         this.host,
@@ -425,43 +408,32 @@ class SpurteServerOptions {
         this.port,
     });
 
-    factory SpurteServerOptions.fromJson(Map<String, dynamic> json) => SpurteServerOptions(
-        host: json["host"],
-        https: json["https"] == null ? null : SpurteServerHttpsOptions.fromJson(json["https"]),
-        port: json["port"],
-    );
+    factory SpurteServerOptions.fromJson(Map<String, dynamic> json) => _$SpurteServerOptionsFromJson(json);
 
-    Map<String, dynamic> toJson() => {
-        "host": host,
-        "https": https?.toJson(),
-        "port": port,
-    };
+    Map<String, dynamic> toJson() => _$SpurteServerOptionsToJson(this);
 }
 
 
 ///HTTPS information that, when provided, can be used for creating a https server
+@JsonSerializable()
 class SpurteServerHttpsOptions {
     
     ///The path to the https certificate used for creating the https server
-    String? cert;
+    @JsonKey(name: "cert")
+    final String? cert;
     
     ///The path to the https key used for creating the https server
-    String? key;
+    @JsonKey(name: "key")
+    final String? key;
 
     SpurteServerHttpsOptions({
         this.cert,
         this.key,
     });
 
-    factory SpurteServerHttpsOptions.fromJson(Map<String, dynamic> json) => SpurteServerHttpsOptions(
-        cert: json["cert"],
-        key: json["key"],
-    );
+    factory SpurteServerHttpsOptions.fromJson(Map<String, dynamic> json) => _$SpurteServerHttpsOptionsFromJson(json);
 
-    Map<String, dynamic> toJson() => {
-        "cert": cert,
-        "key": key,
-    };
+    Map<String, dynamic> toJson() => _$SpurteServerHttpsOptionsToJson(this);
 }
 
 class EnumValues<T> {

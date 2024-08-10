@@ -1,6 +1,9 @@
+#!/usr/bin/env node
+
 import { FetchingJSONSchemaStore, InputData, JSONSchemaInput, quicktype } from "quicktype-core";
 import { join, dirname } from "node:path";
 import { exists, mkdir, writeFileSync } from "node:fs";
+import { execSync } from "node:child_process";
 
 import copyright from "../shared/copyright.js";
 import { exit } from "node:process";
@@ -10,9 +13,10 @@ import { exit } from "node:process";
  * @param {string} language 
  * @param {string} name 
  * @param {string} schema 
+ * @param {string} confName
  * @param {boolean} [debug=false]
  */
-async function generateFromJSONSchema(language, name, schema, debug = false) {
+async function generateFromJSONSchema(language, name, confName, schema, debug = false) {
     const schemaInput = new JSONSchemaInput(new FetchingJSONSchemaStore());
 
     await schemaInput.addSource({
@@ -33,9 +37,10 @@ async function generateFromJSONSchema(language, name, schema, debug = false) {
             "ignore_for_file: constant_identifier_names"
         ],
         rendererOptions: {
-            nullSafety: true,
-            finalProperties: true,
-            useJsonAnnotation: true,
+            "null-safety": true,
+            "final-props": true,
+            "use-json-annotation": true,
+            "part-name": confName
         }
     })
 }
@@ -45,13 +50,18 @@ async function main() {
     const pkg = join(process.cwd(), "packages", "spurte");
     const pkgConfig = join(pkg, "lib", "src", "schema", "config.dart");
 
+    console.log("Fetching schema");
     const config = await fetch("https://spurte.github.io/schema/dart/openapi.json").then(async v => await v.text());
-    await generateFromJSONSchema('dart', 'SpurteConfig', config).then((c) => {
+
+    console.log("Parsing Schema");
+    await generateFromJSONSchema('dart', 'SpurteConfig', 'config', config).then((c) => {
         const { lines } = c;
         
         let code = lines.join("\n");
         code = `${copyright}\n${code}`;
 
+        // write config to output file
+        console.log("Writing configuration to file");
         exists(pkgConfig, function (exists) {
             if (!exists) mkdir(dirname(pkgConfig), { recursive: true }, (err, path) => {
                 if (err) {
@@ -63,7 +73,11 @@ async function main() {
 
         writeFileSync(pkgConfig, code);
 
-        console.log("Configuration written to", pkgConfig);
+        // run build_runner
+        console.log("Running build_runner")
+        const output = execSync("dart run build_runner build --delete-conflicting-outputs", { cwd: pkg, encoding: 'utf8' });
+
+        console.log("Done! Configuration written to", pkgConfig);
     });
 }
 

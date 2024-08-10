@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'config/spurte_config.dart';
+import 'config/config.dart';
 import 'parser/parser.dart';
 import 'package:path/path.dart' as p;
 
