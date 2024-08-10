@@ -5,7 +5,7 @@ import 'package:package_config/package_config.dart';
 import 'package:path/path.dart' as p;
 
 import '../config/config.dart';
-import '../config/internal/server_config.dart';
+import '../config/internal/default_config.dart';
 import '../config_file.dart';
 import '../utils/logger.dart';
 import '../utils/runner.dart';
