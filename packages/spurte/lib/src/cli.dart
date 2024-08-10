@@ -1,9 +1,9 @@
 library spurte.cli;
 
-import 'commands/build.dart';
-
 import 'commands/base/runner.dart';
 
+import 'commands/prod.dart';
+import 'commands/build.dart';
 import 'commands/run.dart';
 
 void run(List<String> args) {
@@ -11,5 +11,6 @@ void run(List<String> args) {
       version: "0.0.1")
     ..addCommand(RunCommand())
     ..addCommand(BuildCommand())
+    ..addCommand(ProdCommand())
     ..run(args);
 }

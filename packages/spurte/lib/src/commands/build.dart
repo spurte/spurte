@@ -1,11 +1,8 @@
 import 'dart:async';
-import 'dart:io';
+
+import 'package:spurte/src/cli/build.dart';
 
 import '../cli/shared.dart';
-import '../build.dart';
-import '../options/options.dart';
-import '../config_file.dart';
-import '../plugin.dart';
 import 'base/command.dart';
 
 class BuildCommand extends SpurteCommand {
@@ -23,19 +20,6 @@ class BuildCommand extends SpurteCommand {
     final projectDir = result.cwd;
 
     // run plugins
-    try {
-      await runPlugins(config.plugins?.toList() ?? [], projectDir, config: getConfigFile(projectDir, "spurte"));
-    } catch (e) {
-      logger.error(e.toString(), error: true);
-      exit(1);
-    }
-
-    // get build options
-    final options = createBuildOptions(config, projectDir.path);
-
-    logger.info("Building for production...");
-    await build(options);
-
-    logger.fine("Done Building!");
+    await buildProject(config, projectDir, logger: logger);
   }
 }

@@ -40,31 +40,35 @@ class SpurteServer {
   }): _devClient = devClient;
 
   void repl(HttpServer server) async {
-    final stdinQueue = StreamQueue(
-      stdin.transform(utf8.decoder).transform(const LineSplitter())
-    );
-    while (await stdinQueue.hasNext) {
-      final newMessage = await stdinQueue.next;
-      switch (newMessage) {
-        case "h":
-          print(blue.wrap("Options: \n    ${helpOptions.entries.map((kv) => "${styleBold.wrap(kv.key)}: ${kv.value}").join("\n    ")}"));
-          break;
-        case "R":
-          print(red.wrap("Resetting..."));
-          _devClient?.reset();
-          print("Project reset");
-        case "r":
-          print("Performing reload...");
-          if (_devClient != null) {
-            await recompile(_devClient, entrypoint);
-          }
-        case 'q':
-          print("Exiting program");
-          await server.close();
-          if (_devClient != null) terminateClient(_devClient, error: false);
-          await stdinQueue.cancel();
-        default:
+    try {
+      final stdinQueue = StreamQueue(
+        stdin.transform(utf8.decoder).transform(const LineSplitter())
+      );
+      while (await stdinQueue.hasNext) {
+        final newMessage = await stdinQueue.next;
+        switch (newMessage) {
+          case "h":
+            print(blue.wrap("Options: \n    ${helpOptions.entries.map((kv) => "${styleBold.wrap(kv.key)}: ${kv.value}").join("\n    ")}"));
+            break;
+          case "R":
+            print(red.wrap("Resetting..."));
+            _devClient?.reset();
+            print("Project reset");
+          case "r":
+            print("Performing reload...");
+            if (_devClient != null) {
+              await recompile(_devClient, entrypoint);
+            }
+          case 'q':
+            print("Exiting program");
+            await server.close();
+            if (_devClient != null) terminateClient(_devClient, error: false);
+            await stdinQueue.cancel();
+          default:
+        }
       }
+    } catch (e) {
+      print(red.wrap("Error at REPL: ${resetAll.wrap("$e")}"));
     }
   }
 }
@@ -97,7 +101,7 @@ Handler _clientHandler(DartDevcFrontendServerClient client, {String entrypoint =
   };
 }
 
-Future<SpurteServer> serve(ServerOptions options) async {
+Future<SpurteServer> serve(ServerOptions options, {bool log = false}) async {
   DartClientResult client;
   String relativeEntry = p.isRelative(options.entry) ? options.entry : p.relative(options.entry, from: options.cwd);
   if (options.prodServer) {
@@ -107,7 +111,8 @@ Future<SpurteServer> serve(ServerOptions options) async {
   }
 
   Cascade cascade = await buildServer(client, relativeEntry, options);
-  final handler = Pipeline().addMiddleware(logRequests()).addHandler(cascade.handler);
+  final handler = log ? Pipeline().addMiddleware(logRequests()).addHandler(cascade.handler)
+  : cascade.handler;
 
   // https
   final chain = options.cert == null ? null : Platform.script.resolve(options.cert ?? "").toFilePath();
