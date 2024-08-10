@@ -71,6 +71,11 @@ class SpurteConfig {
     @JsonKey(name: "plugins")
     final List<String>? plugins;
     
+    ///Configure the options for running the spurte production file server for serving the
+    ///production build.
+    @JsonKey(name: "prod")
+    final SpurteProdOptions? prod;
+    
     ///The public directory to use for serving public assets. Defaults to `public/`
     @JsonKey(name: "publicDir")
     final String? publicDir;
@@ -102,6 +107,7 @@ class SpurteConfig {
         this.logLevel,
         this.mode,
         this.plugins,
+        this.prod,
         this.publicDir,
         this.publicRoot,
         this.pubspec,
@@ -386,6 +392,58 @@ final spurteModeValues = EnumValues({
 });
 
 
+///Configure the options for running the spurte production file server for serving the
+///production build.
+@JsonSerializable()
+class SpurteProdOptions {
+    
+    ///The server hostname. Defaults to "localhost"
+    @JsonKey(name: "host")
+    final String? host;
+    
+    ///HTTPS information that, when provided, can be used for creating a https server
+    @JsonKey(name: "https")
+    final ProdHttps? https;
+    
+    ///The server port number. Defaults to 8000 for development, and 3000 for production preview
+    @JsonKey(name: "port")
+    final int? port;
+
+    SpurteProdOptions({
+        this.host,
+        this.https,
+        this.port,
+    });
+
+    factory SpurteProdOptions.fromJson(Map<String, dynamic> json) => _$SpurteProdOptionsFromJson(json);
+
+    Map<String, dynamic> toJson() => _$SpurteProdOptionsToJson(this);
+}
+
+
+///HTTPS information that, when provided, can be used for creating a https server
+@JsonSerializable()
+class ProdHttps {
+    
+    ///The path to the https certificate used for creating the https server
+    @JsonKey(name: "cert")
+    final String? cert;
+    
+    ///The path to the https key used for creating the https server
+    @JsonKey(name: "key")
+    final String? key;
+
+    ProdHttps({
+        this.cert,
+        this.key,
+    });
+
+    factory ProdHttps.fromJson(Map<String, dynamic> json) => _$ProdHttpsFromJson(json);
+
+    Map<String, dynamic> toJson() => _$ProdHttpsToJson(this);
+}
+
+
 ///Configure the server options for Spurte's development server
 @JsonSerializable()
 class SpurteServerOptions {
@@ -396,9 +454,9 @@ class SpurteServerOptions {
     
     ///HTTPS information that, when provided, can be used for creating a https server
     @JsonKey(name: "https")
-    final SpurteServerHttpsOptions? https;
+    final ServerHttps? https;
     
-    ///The server port number. Defaults to 8000
+    ///The server port number. Defaults to 8000 for development, and 3000 for production preview
     @JsonKey(name: "port")
     final int? port;
 
@@ -416,7 +474,7 @@ class SpurteServerOptions {
 
 ///HTTPS information that, when provided, can be used for creating a https server
 @JsonSerializable()
-class SpurteServerHttpsOptions {
+class ServerHttps {
     
     ///The path to the https certificate used for creating the https server
     @JsonKey(name: "cert")
@@ -426,14 +484,14 @@ class SpurteServerHttpsOptions {
     @JsonKey(name: "key")
     final String? key;
 
-    SpurteServerHttpsOptions({
+    ServerHttps({
         this.cert,
         this.key,
     });
 
-    factory SpurteServerHttpsOptions.fromJson(Map<String, dynamic> json) => _$SpurteServerHttpsOptionsFromJson(json);
+    factory ServerHttps.fromJson(Map<String, dynamic> json) => _$ServerHttpsFromJson(json);
 
-    Map<String, dynamic> toJson() => _$SpurteServerHttpsOptionsToJson(this);
+    Map<String, dynamic> toJson() => _$ServerHttpsToJson(this);
 }
 
 class EnumValues<T> {

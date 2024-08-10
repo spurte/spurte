@@ -28,6 +28,9 @@ SpurteConfig _$SpurteConfigFromJson(Map<String, dynamic> json) => SpurteConfig(
       mode: $enumDecodeNullable(_$SpurteModeEnumMap, json['mode']),
       plugins:
           (json['plugins'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      prod: json['prod'] == null
+          ? null
+          : SpurteProdOptions.fromJson(json['prod'] as Map<String, dynamic>),
       publicDir: json['publicDir'] as String?,
       publicRoot: json['publicRoot'] as String?,
       pubspec: json['pubspec'] as String?,
@@ -50,6 +53,7 @@ Map<String, dynamic> _$SpurteConfigToJson(SpurteConfig instance) =>
       'logLevel': _$SpurteLogLevelEnumMap[instance.logLevel],
       'mode': _$SpurteModeEnumMap[instance.mode],
       'plugins': instance.plugins,
+      'prod': instance.prod,
       'publicDir': instance.publicDir,
       'publicRoot': instance.publicRoot,
       'pubspec': instance.pubspec,
@@ -166,13 +170,38 @@ const _$PackageManagerEnumMap = {
   PackageManager.YARN: 'yarn',
 };
 
+SpurteProdOptions _$SpurteProdOptionsFromJson(Map<String, dynamic> json) =>
+    SpurteProdOptions(
+      host: json['host'] as String?,
+      https: json['https'] == null
+          ? null
+          : ProdHttps.fromJson(json['https'] as Map<String, dynamic>),
+      port: (json['port'] as num?)?.toInt(),
+    );
+
+Map<String, dynamic> _$SpurteProdOptionsToJson(SpurteProdOptions instance) =>
+    <String, dynamic>{
+      'host': instance.host,
+      'https': instance.https,
+      'port': instance.port,
+    };
+
+ProdHttps _$ProdHttpsFromJson(Map<String, dynamic> json) => ProdHttps(
+      cert: json['cert'] as String?,
+      key: json['key'] as String?,
+    );
+
+Map<String, dynamic> _$ProdHttpsToJson(ProdHttps instance) => <String, dynamic>{
+      'cert': instance.cert,
+      'key': instance.key,
+    };
+
 SpurteServerOptions _$SpurteServerOptionsFromJson(Map<String, dynamic> json) =>
     SpurteServerOptions(
       host: json['host'] as String?,
       https: json['https'] == null
           ? null
-          : SpurteServerHttpsOptions.fromJson(
-              json['https'] as Map<String, dynamic>),
+          : ServerHttps.fromJson(json['https'] as Map<String, dynamic>),
       port: (json['port'] as num?)?.toInt(),
     );
 
@@ -184,15 +213,12 @@ Map<String, dynamic> _$SpurteServerOptionsToJson(
       'port': instance.port,
     };
 
-SpurteServerHttpsOptions _$SpurteServerHttpsOptionsFromJson(
-        Map<String, dynamic> json) =>
-    SpurteServerHttpsOptions(
+ServerHttps _$ServerHttpsFromJson(Map<String, dynamic> json) => ServerHttps(
       cert: json['cert'] as String?,
       key: json['key'] as String?,
     );
 
-Map<String, dynamic> _$SpurteServerHttpsOptionsToJson(
-        SpurteServerHttpsOptions instance) =>
+Map<String, dynamic> _$ServerHttpsToJson(ServerHttps instance) =>
     <String, dynamic>{
       'cert': instance.cert,
       'key': instance.key,
