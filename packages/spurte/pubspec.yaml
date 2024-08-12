@@ -2,7 +2,12 @@ name: spurte
 description: |
   Spurte: Frontend Tooling at your fingertips
 version: 0.0.1-pre
-repository: https://github.com/nikeokoronkwo/spurte-dart
+repository: https://github.com/spurte/spurte
+homepage: https://spurte.github.io
+topics:
+  - spurte
+  - dart-web
+  - frontend
 
 environment:
   sdk: ^3.3.0
