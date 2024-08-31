@@ -1,7 +1,7 @@
 
 import 'package:path/path.dart' as p;
 
-import '../config/config.dart';
+import '../config.dart';
 
 import 'json.dart' as json;
 import 'yaml.dart' as yaml;
