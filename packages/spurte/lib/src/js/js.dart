@@ -21,3 +21,4 @@
 /// 
 /// In production, however, this JS file will need to be bundled.
 /// The js file will be included "as is" as a script tag on the produced HTML.
+library spurte.js;
