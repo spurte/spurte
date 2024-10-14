@@ -1,7 +1,0 @@
-name: spurte_js
-description: Bindings to transform and work with JS in Spurte
-version: 0.0.1-pre
-repository: https://github.com/spurte/spurte
-
-environment:
-  sdk: ^3.4.0
