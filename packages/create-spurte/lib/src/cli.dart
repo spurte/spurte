@@ -35,7 +35,8 @@ void printUsage(ArgParser argParser) {
   print(argParser.usage);
 }
 
-void main(List<String> arguments) {
+/// Pass arguments and run cli
+void run(List<String> arguments) {
   final ArgParser argParser = buildParser();
   try {
     final ArgResults results = argParser.parse(arguments);
@@ -55,14 +56,19 @@ void main(List<String> arguments) {
     }
 
     // Act on the arguments provided.
-    print('Positional arguments: ${results.rest}');
-    if (verbose) {
-      print('[VERBOSE] All arguments: ${results.arguments}');
-    }
+    cli(results);
   } on FormatException catch (e) {
     // Print usage information if an invalid argument was provided.
     print(e.message);
     print('');
     printUsage(argParser);
+  } on Exception catch (e) {
+    print("An unknown error occured");
+    print(e);
   }
+}
+
+/// Run the command line interface
+void cli(ArgResults results) {
+
 }
