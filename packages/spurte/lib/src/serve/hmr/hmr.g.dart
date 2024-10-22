@@ -7,5 +7,5 @@ part of 'hmr.dart';
 // **************************************************************************
 
 const _$hmr_client_script = r'''
-
+console.log("Ur a b*stard");
 ''';
