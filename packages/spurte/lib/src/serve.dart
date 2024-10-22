@@ -11,6 +11,8 @@ import 'package:shelf_packages_handler/shelf_packages_handler.dart';
 import 'package:shelf_static/shelf_static.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart' as io;
+import 'package:spurte/src/serve/hmr/hmr.dart';
+import 'package:spurte/src/serve/html/html.dart';
 
 import 'options/server_options.dart';
 import 'serve/client/dartdevc.dart';
@@ -169,10 +171,28 @@ Future<Cascade> buildServer(DartClientResult devClient, String relativeEntry, Se
     } else {
       return Response.notFound('The path $path could not be found.');
     }
-  })
+  });
   // serve file if requested
+  if (dev) {
+    cascade = cascade.add((req) {
+      if (req.url.path == '/' || req.url.path == '') {
+        File indexHtml = File(p.join(options.cwd, 'index.html'));
+        String indexHtmlContents = indexHtml.readAsStringSync();
+
+        indexHtmlContents = addScriptsToHtml(indexHtmlContents, [
+          hmr_client_script
+        ], module: true);
+
+        return Response.ok(indexHtmlContents, headers: {
+          'Content-Type': 'text/html'
+        });
+      } else {
+        return Response.notFound('index.html could not be updated');
+      }
+    });
+  }
   // TODO: Exclude index.html
-  .add(createStaticHandler(options.cwd, defaultDocument: "index.html"));
+  cascade = cascade.add(createStaticHandler(options.cwd, defaultDocument: "index.html"));
   
   if (dev) {
     cascade = cascade.add(createFileHandler(devClient.dartSdk, url: p.join(p.dirname(relativeEntry), 'dart_sdk.js')))
