@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:async/async.dart';
 import 'package:frontend_server_client/frontend_server_client.dart';
 import 'package:io/ansi.dart';
+import 'package:io/io.dart';
 import 'package:package_config/package_config.dart';
 import 'package:path/path.dart' as p;
 import 'package:shelf_packages_handler/shelf_packages_handler.dart';
@@ -42,7 +43,7 @@ class SpurteServer {
   void repl(HttpServer server) async {
     try {
       final stdinQueue = StreamQueue(
-        stdin.transform(utf8.decoder).transform(const LineSplitter())
+        sharedStdIn.transform(utf8.decoder).transform(const LineSplitter())
       );
       while (await stdinQueue.hasNext) {
         final newMessage = await stdinQueue.next;
@@ -170,6 +171,7 @@ Future<Cascade> buildServer(DartClientResult devClient, String relativeEntry, Se
     }
   })
   // serve file if requested
+  // TODO: Exclude index.html
   .add(createStaticHandler(options.cwd, defaultDocument: "index.html"));
   
   if (dev) {
