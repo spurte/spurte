@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:args/command_runner.dart';
+import 'package:io/ansi.dart';
 
 class SpurteCommandRunner extends CommandRunner {
   final String version;
@@ -28,6 +31,15 @@ class SpurteCommandRunner extends CommandRunner {
     if (args.contains('--verbose') || args.contains('-V')) {
       _verbose = true;
     }
-    return super.run(args);
+
+    try {
+      return super.run(args);
+    } on UsageException catch (err) {
+      // stderr.writeln(red.wrap(err.message));
+      // stderr.writeln(err.usage);
+      exit(1);
+    } catch (e) {
+      exit(1);
+    }
   }
 }
