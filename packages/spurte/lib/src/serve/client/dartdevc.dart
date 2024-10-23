@@ -66,7 +66,7 @@ Future<DartDevClientResult> dartDevCServer(String entrypoint, Directory dir, {Li
 
   var clientActive = false;
 
-  watcher.events.listen((event) async {
+  watcher.events.asBroadcastStream().listen((event) async {
     if (ignorePaths.where((element) => (p.isAbsolute(event.path) ? event.path : p.join(dir.path, event.path)) == element).isNotEmpty) {
       // ignore change
     } else {
@@ -109,7 +109,7 @@ Future<DartDevClientResult> dartDevCServer(String entrypoint, Directory dir, {Li
     }
   });
 
-  return DartDevClientResult._(client: client, dartSdk: dartSdk(dir.path));
+  return DartDevClientResult._(client: client, dartSdk: dartSdk(dir.path), watcher: watcher);
 }
 
 /// Terminates the dartdevc frontend client
@@ -136,11 +136,14 @@ Future<void> recompile(DartDevcFrontendServerClient client, String entrypoint) a
 class DartDevClientResult extends DartClientResult {
   final DartDevcFrontendServerClient client;
 
+  final DirectoryWatcher watcher;
+
   /// Relative path to the dart SDK
   final String dartSdk;
 
   DartDevClientResult._({
     required this.client,
+    required this.watcher,
     this.dartSdk = '.dart_tool/out/dart_sdk.js'
   });
 }

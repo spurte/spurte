@@ -11,6 +11,7 @@ import 'package:shelf_packages_handler/shelf_packages_handler.dart';
 import 'package:shelf_static/shelf_static.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart' as io;
+import 'package:shelf_web_socket/shelf_web_socket.dart';
 import 'package:spurte/src/serve/hmr/hmr.dart';
 import 'package:spurte/src/serve/html/html.dart';
 
@@ -189,6 +190,22 @@ Future<Cascade> buildServer(DartClientResult devClient, String relativeEntry, Se
       } else {
         return Response.notFound('index.html could not be updated');
       }
+    })
+    .add((request) {
+      var path = request.url.path;
+      if (!path.startsWith('/')) path = "/$path";
+
+      if (path == '/spurte__ws') {
+        return webSocketHandler((webSocket) {
+          webSocket.stream.listen((message) {
+            devClient.watcher.events.asBroadcastStream().listen((event) {
+              webSocket.sink.add('reload');
+            });
+          });
+        })(request);
+      }
+
+      return Response.notFound('not websocket');
     });
   }
   // TODO: Exclude index.html
