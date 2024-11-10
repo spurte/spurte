@@ -1,6 +1,16 @@
-import 'package:args/args.dart';
-import 'package:cli_dialog/cli_dialog.dart';
+import 'dart:developer';
+import 'dart:io';
 
+import 'package:args/args.dart';
+import 'package:args/command_runner.dart';
+import 'package:cli_dialog/cli_dialog.dart';
+import 'package:cli_util/cli_logging.dart';
+import 'package:create_spurte/src/fs/files.dart';
+import 'package:create_spurte/src/scaffold.dart';
+import 'package:create_spurte/templates/templates.dart';
+import 'package:io/ansi.dart';
+
+/// TODO: Exception object for Spurte
 const String version = '0.0.1';
 
 ArgParser buildParser() {
@@ -26,7 +36,7 @@ ArgParser buildParser() {
       'template',
       abbr: 't',
       help: 'Provide the template to use for the given project',
-      allowed: ["vanilla"]
+      allowed: templates.keys.map((k) => k.toLowerCase())
     )
     ;
 }
@@ -62,7 +72,7 @@ void run(List<String> arguments) {
     }
 
     // Act on the arguments provided.
-    cli(results);
+    cli(results, verbose: verbose);
   } on FormatException catch (e) {
     // Print usage information if an invalid argument was provided.
     print(e.message);
@@ -75,17 +85,58 @@ void run(List<String> arguments) {
 }
 
 /// Run the command line interface
-void cli(ArgResults results) {
+void cli(ArgResults results, {bool verbose = false}) {
+  var logger = verbose ? Logger.verbose() : Logger.standard();
+
   String name;
+  String dir = '.';
+  var templ;
 
   final normalDialogQuestions = [];
-  final orderOfQuestions = [];
+  final List<String> orderOfQuestions = [];
 
   // Questions
   if (results.rest.isEmpty) {
-    
+    normalDialogQuestions.add(['What is the name of your project', 'name']);
+    orderOfQuestions.add('name');
+  } else {
+    name = results.rest[0];
   }
 
-  // 1. Name of project
+  final listDialogQuestions = [];
   
+  if (results.wasParsed('template')) {
+    templ = templates[templates.keys.singleWhere((k) => k.toLowerCase() == results['template'], orElse: () => throw Exception('Could not find given template'),)];
+  } else {
+    listDialogQuestions.add([
+      {
+        'question': 'Select the desired template to use',
+        'options': templates.keys.toList()
+      }, 
+      'template'
+    ]);
+    orderOfQuestions.add('template');
+  }  
+
+  try {
+    final dialog = CLI_Dialog(questions: normalDialogQuestions, listQuestions: listDialogQuestions, order: orderOfQuestions);
+    final answer = dialog.ask();
+    
+    if (results.rest.isEmpty) {
+      name = answer['name'];
+    } else {
+      throw Exception('Name not initialised. This must be an error from the system');
+    }
+    
+    templ ??= templates[answer['template']]!;
+
+    scaffoldProject(name, dir, templ, logger: logger);
+  } on Exception catch (e) {
+    stderr.writeln(red.wrap('An error occured: $e'));
+  } catch (e) {
+    stderr.writeln(red.wrap('Unknown error occured: $e'));
+    rethrow;
+  } finally {
+    logger.flush();
+  }
 }
