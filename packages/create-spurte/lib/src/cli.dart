@@ -1,4 +1,5 @@
 import 'package:args/args.dart';
+import 'package:cli_dialog/cli_dialog.dart';
 
 const String version = '0.0.1';
 
@@ -30,8 +31,13 @@ ArgParser buildParser() {
     ;
 }
 
+String get description => '''
+''';
+
 void printUsage(ArgParser argParser) {
   print('Usage: create_spurte <flags> [arguments]');
+  
+  print(description);
   print(argParser.usage);
 }
 
@@ -70,5 +76,16 @@ void run(List<String> arguments) {
 
 /// Run the command line interface
 void cli(ArgResults results) {
+  String name;
 
+  final normalDialogQuestions = [];
+  final orderOfQuestions = [];
+
+  // Questions
+  if (results.rest.isEmpty) {
+    
+  }
+
+  // 1. Name of project
+  
 }
