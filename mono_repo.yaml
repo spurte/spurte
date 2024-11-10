@@ -32,34 +32,7 @@ github:
       # These are the stages that are populated in the workflow file
       stages:
       - analyze
-
-  # You can add custom github actions configurations to run after completion
-  # of all other jobs here. This accepts normal github job config except that
-  # the `needs` config is filled in for you, and you aren't allowed to pass it.
-  on_completion:
-    # Example job that pings a web hook url stored in a github secret with a
-    # json payload linking to the failed run.
-    - name: "Notify failure"
-      runs-on: ubuntu-latest
-      # By default this job will only run if all dependent jobs are successful,
-      # but we want to run in the failure case for this purpose.
-      if: failure()
-      steps:
-        - run: >
-            curl -H "Content-Type: application/json" -X POST -d \
-              "{'text':'Build failed! ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}'}" \
-              "${CHAT_WEBHOOK_URL}"
-          env:
-            CHAT_WEBHOOK_URL: ${{ secrets.CHAT_WEBHOOK_URL }}
-
-  # You can customize stage ordering as well as make certain stages be
-  # conditional here, this is supported for all CI providers. The `if`
-  # condition should use the appropriate syntax for the provider it is being
-  # configured for.
-  stages:
-    - name: cron
-      # Only run this stage for scheduled cron jobs
-      if: github.event_name == 'schedule'
+    
 
 # Adds a job that runs `mono_repo generate --validate` to check that everything
 # is up to date. You can specify the value as just `true` or give a `stage`
@@ -78,6 +51,3 @@ merge_stages:
 coverage_service:
 # https://coveralls.io/ - the default
 - coveralls
-# https://codecov.io/ – the other option
-# NOTE: `CODECOV_TOKEN` must be populated in your GitHub actions secrets
-- codecov
