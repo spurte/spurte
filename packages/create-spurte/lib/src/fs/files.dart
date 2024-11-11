@@ -19,7 +19,7 @@ class VFile extends VFileSystemEntity {
 
   @override
   void create([String? path]) {
-    File(p.join(path ?? '.', name)).createSync();
+    File(p.join(path ?? '.', name)).writeAsStringSync(contents);
   }
 }
 
@@ -36,7 +36,7 @@ class VDirectory extends VFileSystemEntity {
   @override
   void create([String? path]) {
     final truePath = p.join(path ?? '.', name);
-    Directory(truePath).createSync();
+    Directory(truePath).createSync(recursive: true);
 
     for (var fse in files) {
       fse.create(truePath);

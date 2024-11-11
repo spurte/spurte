@@ -3,6 +3,9 @@ description: Create a Spurte Application with no hassle and with your favourite 
 version: 0.0.1-rc
 repository: https://github.com/spurte/spurte
 
+executables:
+  create-spurte: create_spurte
+
 environment:
   sdk: ^3.3.0
 

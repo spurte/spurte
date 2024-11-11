@@ -1,6 +1,3 @@
-import 'dart:convert';
-
-import 'package:yaml/yaml.dart';
 import 'package:yaml_edit/yaml_edit.dart';
 
 mixin Json {
@@ -53,9 +50,9 @@ class PubspecEnvironment with Json {
 
   @override
   Map<String, dynamic> toJson() {
-    return loadYaml(json.encode({
+    return {
       'sdk': sdk
-    }));
+    };
   }
 
 }

@@ -6,12 +6,10 @@ import 'package:args/command_runner.dart';
 import 'package:cli_dialog/cli_dialog.dart';
 import 'package:cli_util/cli_logging.dart';
 import 'package:create_spurte/src/fs/files.dart';
+import 'package:create_spurte/src/gen/version.dart';
 import 'package:create_spurte/src/scaffold.dart';
 import 'package:create_spurte/templates/templates.dart';
 import 'package:io/ansi.dart';
-
-/// TODO: Exception object for Spurte
-const String version = '0.0.1';
 
 ArgParser buildParser() {
   return ArgParser()
