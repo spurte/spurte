@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:args/command_runner.dart';
-import 'package:io/ansi.dart';
 
 class SpurteCommandRunner extends CommandRunner {
   final String version;
@@ -34,7 +33,7 @@ class SpurteCommandRunner extends CommandRunner {
 
     try {
       return super.run(args);
-    } on UsageException catch (err) {
+    } on UsageException {
       // stderr.writeln(red.wrap(err.message));
       // stderr.writeln(err.usage);
       exit(1);

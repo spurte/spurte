@@ -34,7 +34,7 @@ socket.addEventListener('message', (ev) => {
 });
 
 socket.addEventListener("close", () => {
-    log("Connection lost - Reconnecting...");
+    console.log("Connection lost - Reconnecting...");
 
     let reconnectionTimerId = setTimeout(() => {
         // Try to connect again, and if successful

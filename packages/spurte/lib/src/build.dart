@@ -12,8 +12,9 @@ class DartBuilderResult {
   final Map<String, String> otherFiles;
 
   const DartBuilderResult._({
-    this.packages = const {},
+    // ignore: unused_element
     this.otherFiles = const {},
+    this.packages = const {},
   });
 }
 
