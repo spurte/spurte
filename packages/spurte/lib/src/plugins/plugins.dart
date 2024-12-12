@@ -1,3 +1,4 @@
+/// TODO: Add more documentation
 // ignore_for_file: constant_identifier_names
 
 import 'dart:async';
@@ -23,10 +24,13 @@ class SpurteResolveOptions {
   final String name;
   final String path;
   final SpurteKind kind;
+  /// Whether this is a development build of the application or not
+  final bool dev;
 
   SpurteResolveOptions({
     required this.name,
     required this.path,
+    this.dev = false,
     this.kind = SpurteKind.Import
   });
 }

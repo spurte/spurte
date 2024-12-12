@@ -1,3 +1,5 @@
+/// TODO: Add more documentation to this page
+
 import '../plugins/plugins.dart';
 
 class SpurtePluginResult {
@@ -10,6 +12,8 @@ class SpurtePluginResult {
   });
 }
 
+/// The base class for defining a spurte plugin
+/// 
 class SpurtePlugin {
   final String? name;
   final SpurteResolve? resolve;

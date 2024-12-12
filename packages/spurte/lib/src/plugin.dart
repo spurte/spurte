@@ -5,7 +5,7 @@ import 'dart:isolate';
 
 import 'package:path/path.dart' as p;
 
-Future<bool> runPlugins(List<String> plugins, Directory dir, {String config = "spurte.config.json"}) async {
+Future<bool> runPlugins(List<String> plugins, Directory dir, {String config = "spurte.config.json", bool dev = false}) async {
   final dartTool = Directory(p.join(dir.absolute.path, '.dart_tool'));
 
   final spurtePluginFile = await File(p.join(dartTool.path, 'spurte', 'plugin.dart')).create(recursive: true);
@@ -36,7 +36,7 @@ void main(_, SendPort port) async {
   // TODO: Optimize
   try {
     for (final plugin in plugins) {
-      app = await resolve(plugin, "${dir.absolute.path}", app: app);
+      app = await resolve(plugin, "${dir.absolute.path}", app: app, dev: $dev);
     }
     port.send("Done!");
   } catch (e) {
@@ -54,6 +54,7 @@ void main(_, SendPort port) async {
   await Isolate.spawnUri(spurtePluginFile.uri, [], port.sendPort);
 
   final String response = (await port.first) as String;
+  print(response);
   
   if (response.startsWith("Done!")) {
     return true;

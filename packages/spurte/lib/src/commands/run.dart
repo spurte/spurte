@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:browser_launcher/browser_launcher.dart';
 import 'package:io/ansi.dart';
 
 import '../cli/shared.dart';
@@ -47,7 +48,7 @@ class RunCommand extends SpurteCommand {
 
     // run plugins
     try {
-      await runPlugins(config.plugins?.toList() ?? [], projectDir, config: getConfigFile(projectDir, "spurte"));
+      await runPlugins(config.plugins?.toList() ?? [], projectDir, config: getConfigFile(projectDir, "spurte"), dev: true);
     } catch (e) {
       logger.error(e.toString(), error: true);
       exit(1);
@@ -72,9 +73,41 @@ Web Server Started!
     );
 
     if (argResults?['launch']) {
-
+      // launch website
+      if (!(await launchBrowser(serverDest))) {
+        print("Could not launch site.");
+      }
     }
 
     if (argResults?['repl']) server.repl(webServer.server);
   }
+}
+
+Future<bool> launchBrowser(String url) async {
+  // check if user has chrome
+  final chrome = await Chrome.start([url]);
+  if (await chrome.exitCode == 0) {
+    // chrome started!
+    return true;
+  }
+
+  // if not then try others
+  // check for safari
+  if (Platform.isMacOS) {
+    final safari = await Process.start('open', ['-a', 'Safari', url], mode: ProcessStartMode.detached);
+
+    if (await safari.exitCode == 0) {
+      return true;
+    }
+  }
+
+  // check for firefox
+  final firefox = await Process.start('firefox', [url], mode: ProcessStartMode.detached);
+
+  if (await firefox.exitCode == 0) {
+    return true;
+  }
+
+  // can't
+  return false;
 }

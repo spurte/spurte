@@ -6,10 +6,9 @@ import '../api/plugin.dart';
 
 import 'package:path/path.dart' as p;
 
-Future<SpurteApp> resolve(SpurtePlugin plugin, String dir, {required SpurteApp app}) async {
+Future<SpurteApp> resolve(SpurtePlugin plugin, String dir, {required SpurteApp app, bool dev = false}) async {
   final directory = Directory(dir);
   // perform setup
-  /* DEBUG */ print("SETUP");
   var main = await (plugin.setup ?? (app) => app)(app);
 
   // perform resolving and loading
@@ -22,9 +21,10 @@ Future<SpurteApp> resolve(SpurtePlugin plugin, String dir, {required SpurteApp a
       final opt = SpurteResolveOptions(
         name: p.basename(fse.path), 
         path: fse.absolute.path, 
-        kind: SpurteKind.File
+        kind: SpurteKind.File,
+        dev: dev
       );
-      /* DEBUG */ print("RESOLVE ${fse.path}");
+
       final id = (plugin.resolve ?? (opt) => null)(opt);
       if (resolved.keys.contains(id)) {
         resolved[id]?.add(opt);
@@ -41,11 +41,9 @@ Future<SpurteApp> resolve(SpurtePlugin plugin, String dir, {required SpurteApp a
 
     for (final v in opt.value) {
       // perform before load
-      /* DEBUG */ print("BEFORE LOAD ${v.path}");
       (plugin.beforeLoad ?? (id) {})(v);
 
       // perform load
-      /* DEBUG */ print("LOAD");
       final content = File(v.path).readAsStringSync();
       final result = (plugin.load ?? (id, source, [options]) {
         return SpurtePluginResult(
@@ -55,20 +53,18 @@ Future<SpurteApp> resolve(SpurtePlugin plugin, String dir, {required SpurteApp a
       })(id, content, v);
 
       if (result.path != null) {
+        Directory(p.dirname(result.path ?? '')).createSync(recursive: true);
         File(result.path!).writeAsStringSync(result.src ?? "");
       }
 
       // perform after load
-      /* DEBUG */ print("AFTER LOAD ${result.path}");
       (plugin.afterLoad ?? (id) {})(v);
     }
   }
 
   // perform teardown
-  /* DEBUG */ print("TEARDOWN");
   main = await (plugin.teardown ?? (app) => app)(app);
 
   // return app to be used in next run
-  /* DEBUG */ print("DONE");
   return main;
 }
