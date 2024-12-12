@@ -20,12 +20,13 @@ Future<SpurteApp> resolve(SpurtePlugin plugin, String dir, {required SpurteApp a
     } else {
       final opt = SpurteResolveOptions(
         name: p.basename(fse.path), 
-        path: fse.absolute.path, 
+        path: p.normalize(fse.absolute.path), 
         kind: SpurteKind.File,
         dev: dev
       );
 
       final id = (plugin.resolve ?? (opt) => null)(opt);
+      if (id == null) continue;
       if (resolved.keys.contains(id)) {
         resolved[id]?.add(opt);
       } else {
@@ -33,6 +34,8 @@ Future<SpurteApp> resolve(SpurtePlugin plugin, String dir, {required SpurteApp a
       }
     }
   }
+
+  // print(resolved.entries.map((k) => k.value.map((m) => m.path)));
 
   // TODO: Optimize
   for (final opt in resolved.entries) {
