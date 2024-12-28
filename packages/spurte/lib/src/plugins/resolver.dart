@@ -56,8 +56,8 @@ Future<SpurteApp> resolve(SpurtePlugin plugin, String dir, {required SpurteApp a
       })(id, content, v);
 
       if (result.path != null) {
-        Directory(p.dirname(result.path ?? '')).createSync(recursive: true);
-        File(result.path!).writeAsStringSync(result.src ?? "");
+        await Directory(p.dirname(result.path ?? '')).create(recursive: true);
+        await File(result.path!).writeAsString(result.src ?? "");
       }
 
       // perform after load

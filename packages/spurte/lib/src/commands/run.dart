@@ -54,6 +54,8 @@ class RunCommand extends SpurteCommand {
       exit(1);
     }
 
+    
+
     // create server options from configuration
     final serverOptions = createServerOptions(config, projectDir.path);
 
