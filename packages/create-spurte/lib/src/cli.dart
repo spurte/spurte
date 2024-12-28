@@ -30,13 +30,10 @@ ArgParser buildParser() {
       negatable: false,
       help: 'Print the tool version.',
     )
-    ..addOption(
-      'template',
-      abbr: 't',
-      help: 'Provide the template to use for the given project',
-      allowed: templates.keys.map((k) => k.toLowerCase())
-    )
-    ;
+    ..addOption('template',
+        abbr: 't',
+        help: 'Provide the template to use for the given project',
+        allowed: templates.keys.map((k) => k.toLowerCase()));
 }
 
 String get description => '''
@@ -44,7 +41,7 @@ String get description => '''
 
 void printUsage(ArgParser argParser) {
   print('Usage: create_spurte <flags> [arguments]');
-  
+
   print(description);
   print(argParser.usage);
 }
@@ -102,30 +99,37 @@ void cli(ArgResults results, {bool verbose = false}) {
   }
 
   final listDialogQuestions = [];
-  
+
   if (results.wasParsed('template')) {
-    templ = templates[templates.keys.singleWhere((k) => k.toLowerCase() == results['template'], orElse: () => throw Exception('Could not find given template'),)];
+    templ = templates[templates.keys.singleWhere(
+      (k) => k.toLowerCase() == results['template'],
+      orElse: () => throw Exception('Could not find given template'),
+    )];
   } else {
     listDialogQuestions.add([
       {
         'question': 'Select the desired template to use',
         'options': templates.keys.toList()
-      }, 
+      },
       'template'
     ]);
     orderOfQuestions.add('template');
-  }  
+  }
 
   try {
-    final dialog = CLI_Dialog(questions: normalDialogQuestions, listQuestions: listDialogQuestions, order: orderOfQuestions);
+    final dialog = CLI_Dialog(
+        questions: normalDialogQuestions,
+        listQuestions: listDialogQuestions,
+        order: orderOfQuestions);
     final answer = dialog.ask();
-    
+
     if (results.rest.isEmpty) {
       name = answer['name'];
     } else {
-      throw Exception('Name not initialised. This must be an error from the system');
+      throw Exception(
+          'Name not initialised. This must be an error from the system');
     }
-    
+
     templ ??= templates[answer['template']]!;
 
     scaffoldProject(name, dir, templ, logger: logger);

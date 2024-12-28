@@ -5,7 +5,7 @@ import 'package:io/ansi.dart';
 
 void main(List<String> arguments) {
   try {
-  run(arguments);
+    run(arguments);
   } on UsageException catch (e) {
     print(red.wrap(e.message));
     print('');

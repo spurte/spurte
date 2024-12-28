@@ -19,12 +19,14 @@ class ProdCommand extends SpurteCommand {
 
   @override
   FutureOr? run() async {
-    final result = await preCommand(argResults?.rest ?? [], logger, spurteRunner);
+    final result =
+        await preCommand(argResults?.rest ?? [], logger, spurteRunner);
 
     final config = result.config;
     final projectDir = result.cwd;
 
-    final distDir = Directory(p.join(projectDir.path, config.build?.outdir ?? "dist"));
+    final distDir =
+        Directory(p.join(projectDir.path, config.build?.outdir ?? "dist"));
 
     if (!(distDir.existsSync() && distDir.listSync().isNotEmpty)) {
       logger.warn("Build not available, building project...");
@@ -34,15 +36,15 @@ class ProdCommand extends SpurteCommand {
       print("\n");
     }
 
-    final serverDest = "http${config.prod?.https == null ? "" : "s"}://${config.prod?.host ?? "localhost"}:${config.prod?.port ?? 3000}";
+    final serverDest =
+        "http${config.prod?.https == null ? "" : "s"}://${config.prod?.host ?? "localhost"}:${config.prod?.port ?? 3000}";
 
     // run file server
-    await runFileServer(distDir, config, onListen: () => print(blue.wrap("""${styleBold.wrap("SPURTE")}
+    await runFileServer(distDir, config,
+        onListen: () => print(blue.wrap("""${styleBold.wrap("SPURTE")}
 
 Prod File Server Started!
 - Local: ${yellow.wrap(serverDest)}
-"""
-)));
+""")));
   }
-  
 }

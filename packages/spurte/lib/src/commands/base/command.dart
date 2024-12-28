@@ -7,7 +7,8 @@ abstract class SpurteCommand<T> extends Command<T> {
   SpurteLogger? _logger;
   SpurteLogger get logger {
     if (runner is SpurteCommandRunner) {
-      _logger ??= SpurteLogger(verbose: (runner as SpurteCommandRunner).verbose);
+      _logger ??=
+          SpurteLogger(verbose: (runner as SpurteCommandRunner).verbose);
       return _logger ??
           SpurteLogger(verbose: (runner as SpurteCommandRunner).verbose);
     } else {

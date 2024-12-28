@@ -8,7 +8,7 @@ SpurteConfig parseConfig(String path) {
   Map<String, dynamic> config;
   final yamlData = File(path).readAsStringSync();
 
-   try {
+  try {
     config = loadYaml(yamlData);
   } catch (e) {
     throw FormatException("JSON is meant to be a map", e);

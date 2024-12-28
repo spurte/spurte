@@ -1,4 +1,3 @@
-
 class ServerOptions {
   final int port;
   final String host;
@@ -11,15 +10,15 @@ class ServerOptions {
   final String entry;
   final bool prodServer;
 
-  const ServerOptions({
-    required this.host,
-    required this.port,
-    required this.cwd,
-    required this.entry,
-    this.publicDir = 'public',
-    this.publicRoot = '/',
-    this.index = 'index.html',
-    this.cert, this.key,
-    this.prodServer = false
-  });
+  const ServerOptions(
+      {required this.host,
+      required this.port,
+      required this.cwd,
+      required this.entry,
+      this.publicDir = 'public',
+      this.publicRoot = '/',
+      this.index = 'index.html',
+      this.cert,
+      this.key,
+      this.prodServer = false});
 }

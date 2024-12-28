@@ -8,7 +8,6 @@ final plugin = SpurtePlugin(
 
     return null;
   },
-
   load: (id, source, [options]) {
     switch (id) {
       case "text":
@@ -18,9 +17,8 @@ final plugin = SpurtePlugin(
         });
         // return for text id
         return SpurtePluginResult(
-          src: srclines.join("\n\n"),
-          path: options?.path.replaceFirst(".txt", ".g.dart")
-        );
+            src: srclines.join("\n\n"),
+            path: options?.path.replaceFirst(".txt", ".g.dart"));
       default:
         // return default
         return SpurtePluginResult();

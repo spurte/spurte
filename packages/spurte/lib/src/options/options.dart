@@ -11,7 +11,7 @@ export 'build_options.dart';
 ServerOptions createServerOptions(SpurteConfig config, String cwd) {
   return ServerOptions(
     entry: resolveEntry(config.entry, cwd),
-    host: config.server?.host ?? "localhost", 
+    host: config.server?.host ?? "localhost",
     port: config.server?.port ?? 8000,
     cert: config.server?.https?.cert,
     key: config.server?.https?.key,
@@ -24,12 +24,11 @@ ServerOptions createServerOptions(SpurteConfig config, String cwd) {
 
 BuildOptions createBuildOptions(SpurteConfig config, String cwd) {
   return BuildOptions(
-    minify: config.build?.minify ?? true,
-    dist: config.build?.outdir ?? "dist",
-    entrypoints: [resolveEntry(config.entry, cwd)],
-    index: 'index.html',
-    publicDir: config.publicDir ?? 'public',
-    publicRoot: config.publicRoot ?? '/',
-    cwd: config.root ?? cwd
-  );
+      minify: config.build?.minify ?? true,
+      dist: config.build?.outdir ?? "dist",
+      entrypoints: [resolveEntry(config.entry, cwd)],
+      index: 'index.html',
+      publicDir: config.publicDir ?? 'public',
+      publicRoot: config.publicRoot ?? '/',
+      cwd: config.root ?? cwd);
 }

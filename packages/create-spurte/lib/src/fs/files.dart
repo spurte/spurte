@@ -32,7 +32,7 @@ class VDirectory extends VFileSystemEntity {
   VDirectory(this.name, {List<VFileSystemEntity>? files}) : files = files ?? [];
 
   void addFile(VFileSystemEntity vfse) => files.add(vfse);
-  
+
   @override
   void create([String? path]) {
     final truePath = p.join(path ?? '.', name);

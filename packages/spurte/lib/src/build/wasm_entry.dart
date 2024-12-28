@@ -3,7 +3,8 @@ import 'dart:io';
 import 'package:path/path.dart' as p;
 
 String wasmJsTemplate(String name, [String? importFile, String? exportFile]) {
-  return exportFile == null ? '''(async function () {
+  return exportFile == null
+      ? '''(async function () {
     let dart2wasm_runtime;
     let moduleInstance;
     try {
@@ -24,7 +25,8 @@ String wasmJsTemplate(String name, [String? importFile, String? exportFile]) {
         }
     }
 })();
-''' : '''import * as dart2wasm_runtime from './$name.mjs';
+'''
+      : '''import * as dart2wasm_runtime from './$name.mjs';
 ${importFile == null ? "const imports = {};" : "import importObj from '$importFile'; const imports = importObj;"}
 
 export function instantiate() {
@@ -54,8 +56,10 @@ main(instantiate());
 ''';
 }
 
-Future<void> writeWasm(String name, Directory distDir, [String? importFile, String? exportFile]) async {
-  String template = wasmJsTemplate(name, importFile == null ? null : p.basename(importFile), exportFile);
+Future<void> writeWasm(String name, Directory distDir,
+    [String? importFile, String? exportFile]) async {
+  String template = wasmJsTemplate(
+      name, importFile == null ? null : p.basename(importFile), exportFile);
 
   String distFile = exportFile == null ? "$name.dart.js" : "$name.dart.lib.js";
   await File(p.join(distDir.absolute.path, distFile)).writeAsString(template);
@@ -65,6 +69,7 @@ Future<void> writeWasm(String name, Directory distDir, [String? importFile, Stri
   }
 
   if (importFile != null) {
-    await File(importFile).copy(p.join(distDir.absolute.path, p.basename(importFile)));
+    await File(importFile)
+        .copy(p.join(distDir.absolute.path, p.basename(importFile)));
   }
 }

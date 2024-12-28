@@ -1,19 +1,24 @@
-
 import 'dart:async';
 import 'dart:io';
 import 'dart:isolate';
 
 import 'package:path/path.dart' as p;
 
-Future<bool> runPlugins(List<String> plugins, Directory dir, {String config = "spurte.config.json", bool dev = false}) async {
+Future<bool> runPlugins(List<String> plugins, Directory dir,
+    {String config = "spurte.config.json", bool dev = false}) async {
   final dartTool = Directory(p.join(dir.absolute.path, '.dart_tool'));
 
-  final spurtePluginFile = await File(p.join(dartTool.path, 'spurte', 'plugin.dart')).create(recursive: true);
+  final spurtePluginFile =
+      await File(p.join(dartTool.path, 'spurte', 'plugin.dart'))
+          .create(recursive: true);
   // create isolate file for all plugins
   final spurtePluginFileContent = '''${plugins.map((e) {
     // check if is relative path and resolve relative to where the file is
     final isRelativeUri = !(e.startsWith('package:')) && p.isRelative(e);
-    final fullPath = isRelativeUri ? p.relative(p.join(dir.path, e), from: p.dirname(spurtePluginFile.path)) : e;
+    final fullPath = isRelativeUri
+        ? p.relative(p.join(dir.path, e),
+            from: p.dirname(spurtePluginFile.path))
+        : e;
 
     // Return import statement
     return 'import "$fullPath" as _i${plugins.indexOf(e)};';
@@ -55,7 +60,7 @@ void main(_, SendPort port) async {
 
   final String response = (await port.first) as String;
   print(response);
-  
+
   if (response.startsWith("Done!")) {
     return true;
   } else {

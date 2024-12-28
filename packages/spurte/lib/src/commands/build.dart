@@ -14,7 +14,8 @@ class BuildCommand extends SpurteCommand {
 
   @override
   FutureOr? run() async {
-    final result = await preCommand(argResults?.rest ?? [], logger, spurteRunner);
+    final result =
+        await preCommand(argResults?.rest ?? [], logger, spurteRunner);
 
     final config = result.config;
     final projectDir = result.cwd;

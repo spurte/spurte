@@ -50,9 +50,6 @@ class PubspecEnvironment with Json {
 
   @override
   Map<String, dynamic> toJson() {
-    return {
-      'sdk': sdk
-    };
+    return {'sdk': sdk};
   }
-
 }

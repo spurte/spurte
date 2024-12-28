@@ -35,14 +35,12 @@ void syncVersion([bool pkl = false]) async {
   // write to version.dart for cli
   var versionFilePath = "lib/src/gen/version.dart";
   var versionFile = await File(versionFilePath).create(recursive: true);
-  versionFile.writeAsString(
-    """
+  versionFile.writeAsString("""
 const String version = "$version";
 """);
 
   // if pkl, write to pkl file
 }
-
 
 enum VersionType { major, minor, patch }
 
@@ -62,15 +60,15 @@ class Version {
     var build = parts.length > 2 ? parts[2].split("+").last : null;
     if (build == parts[2]) build = null;
     return Version(
-      int.parse(parts[0]), 
-      int.parse(parts.length > 1 ? parts[1] : "0"), 
-      int.parse(parts.length > 2 ? parts[2].split("-").first.split("+").first : "0"),
-      prerelease,
-      build
-    );
+        int.parse(parts[0]),
+        int.parse(parts.length > 1 ? parts[1] : "0"),
+        int.parse(parts.length > 2
+            ? parts[2].split("-").first.split("+").first
+            : "0"),
+        prerelease,
+        build);
   }
 
-  
   @override
   String toString() {
     return "$major.$minor.$patch${pre == null ? "" : "-$pre"}${build == null ? "" : "+$build"}";

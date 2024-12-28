@@ -10,7 +10,8 @@ String addScriptToHtml(String html, String script, {bool module = false}) {
   return parsedHtml.outerHtml;
 }
 
-String addScriptsToHtml(String html, List<String> scripts, {bool module = false}) {
+String addScriptsToHtml(String html, List<String> scripts,
+    {bool module = false}) {
   final parsedHtml = parse(html);
   final scriptElements = scripts.map((s) {
     final el = Element.tag('script')..innerHtml = s;

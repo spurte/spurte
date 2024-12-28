@@ -22,45 +22,53 @@ abstract class DartBuilder {
   String get exec;
 
   List<String> get args;
-  
+
   /// [entrypoint] must be a relative path from the project directory specified in [options] ([BuildOptions.cwd])
   FutureOr<DartBuilderResult> build(String entrypoint, BuildOptions options);
 }
 
 class DartJSBuilder implements DartBuilder {
   @override
-  Future<DartBuilderResult> build(String entrypoint, BuildOptions options) async {
+  Future<DartBuilderResult> build(
+      String entrypoint, BuildOptions options) async {
     final addArgs = [
-      "--multi-root-scheme=org-dartlang-sdk", 
+      "--multi-root-scheme=org-dartlang-sdk",
       "--packages=${p.join(options.cwd, '.dart_tool', 'package_config.json')}",
       if (options.minify) '-O2',
-      '-o${p.join(options.dist, p.basename(entrypoint))}.js', entrypoint
+      '-o${p.join(options.dist, p.basename(entrypoint))}.js',
+      entrypoint
     ];
 
     final packageConfig = await findPackageConfig(Directory(options.cwd));
     final packages = packageConfig?.packages ?? [];
-    final pkgMap = { for (var e in packages) e.name :'/packages/${e.name}' };
+    final pkgMap = {for (var e in packages) e.name: '/packages/${e.name}'};
 
     // compile project
-    final result = await Process.run(exec, [...args, ...addArgs], workingDirectory: options.cwd);
+    final result = await Process.run(exec, [...args, ...addArgs],
+        workingDirectory: options.cwd);
 
     if (result.exitCode != 0) {
-      print("Failed to compile the program: \n${result.stdout}\n${result.stderr}");
+      print(
+          "Failed to compile the program: \n${result.stdout}\n${result.stderr}");
       exit(result.exitCode);
     }
 
     // post build process
     if (!options.verbose) {
-      await File(p.join(options.cwd, options.dist, '${p.basename(entrypoint)}.js.deps')).delete();
-      await File(p.join(options.cwd, options.dist, '${p.basename(entrypoint)}.js.map')).delete();
+      await File(p.join(
+              options.cwd, options.dist, '${p.basename(entrypoint)}.js.deps'))
+          .delete();
+      await File(p.join(
+              options.cwd, options.dist, '${p.basename(entrypoint)}.js.map'))
+          .delete();
     }
 
     return DartBuilderResult._(packages: pkgMap);
   }
-  
+
   @override
   List<String> get args => ["compile", "js"];
-  
+
   @override
   String get exec => Platform.executable;
 }
@@ -68,35 +76,39 @@ class DartJSBuilder implements DartBuilder {
 class DartWasmBuilder implements DartBuilder {
   @override
   List<String> get args => ["compile", "wasm"];
-  
+
   @override
   String get exec => Platform.executable;
 
   @override
-  Future<DartBuilderResult> build(String entrypoint, BuildOptions options) async {
+  Future<DartBuilderResult> build(
+      String entrypoint, BuildOptions options) async {
     final addArgs = [
       "--packages=${p.join(options.cwd, '.dart_tool', 'package_config.json')}",
       if (options.minify) '-O2',
-      '-o${p.join(options.dist, p.basename(entrypoint))}.js', entrypoint
+      '-o${p.join(options.dist, p.basename(entrypoint))}.js',
+      entrypoint
     ];
 
     final packageConfig = await findPackageConfig(Directory(options.cwd));
     final packages = packageConfig?.packages ?? [];
-    final pkgMap = { for (var e in packages) e.name :'/packages/${e.name}' };
+    final pkgMap = {for (var e in packages) e.name: '/packages/${e.name}'};
 
-    final result = await Process.run(exec, [...args, ...addArgs], workingDirectory: options.cwd);
+    final result = await Process.run(exec, [...args, ...addArgs],
+        workingDirectory: options.cwd);
 
     if (result.exitCode != 0) {
-      print("Failed to compile the program: \n${result.stdout}\n${result.stderr}");
+      print(
+          "Failed to compile the program: \n${result.stdout}\n${result.stderr}");
       exit(result.exitCode);
     }
 
     // post build
     await writeWasm(
-      p.basenameWithoutExtension(entrypoint), 
-      Directory(p.join(options.cwd, options.dist)),
-      options.importFile, options.exportFile
-    );
+        p.basenameWithoutExtension(entrypoint),
+        Directory(p.join(options.cwd, options.dist)),
+        options.importFile,
+        options.exportFile);
 
     return DartBuilderResult._(packages: pkgMap);
   }
@@ -120,16 +132,21 @@ Future<void> build(BuildOptions options) async {
     b = await builder.build(e, options);
     if (!bInit) {
       bInit = true;
-      File(p.join(options.cwd, options.dist, '.packages')).writeAsStringSync(b.packages.entries.map((e) => "${e.key}:${e.value}").join("\n"));
+      File(p.join(options.cwd, options.dist, '.packages')).writeAsStringSync(
+          b.packages.entries.map((e) => "${e.key}:${e.value}").join("\n"));
     }
   }
 
-  // copy html file 
-  var indexPath = p.isRelative(options.index) ? p.join(options.cwd, options.index) : options.index;
+  // copy html file
+  var indexPath = p.isRelative(options.index)
+      ? p.join(options.cwd, options.index)
+      : options.index;
   var index = await File(indexPath).readAsString();
 
   index = index.replaceAll('web/', '/');
-  File(p.join(options.cwd, options.dist, p.relative(indexPath, from: options.cwd))).writeAsString(index);
+  File(p.join(
+          options.cwd, options.dist, p.relative(indexPath, from: options.cwd)))
+      .writeAsString(index);
 
   // copy all public assets in the public directory at the root of the directory
   final publicDir = Directory(p.join(options.cwd, options.publicDir));
@@ -137,15 +154,14 @@ Future<void> build(BuildOptions options) async {
   if (await publicDir.exists()) {
     await for (final publicFile in publicDir.list(recursive: true)) {
       if (publicFile is File) {
-        var substring = options.publicRoot.substring(0, options.publicRoot.length);
-        await publicFile.copy(
-          p.join(
-            options.cwd, 
-            options.dist, 
-            substring == "" || substring == "/" ? "." : substring, 
-            p.relative(publicFile.absolute.path, from: p.join(options.cwd, options.publicDir))
-          )
-        );
+        var substring =
+            options.publicRoot.substring(0, options.publicRoot.length);
+        await publicFile.copy(p.join(
+            options.cwd,
+            options.dist,
+            substring == "" || substring == "/" ? "." : substring,
+            p.relative(publicFile.absolute.path,
+                from: p.join(options.cwd, options.publicDir))));
       }
     }
   }

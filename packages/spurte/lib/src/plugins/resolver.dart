@@ -6,7 +6,8 @@ import '../api/plugin.dart';
 
 import 'package:path/path.dart' as p;
 
-Future<SpurteApp> resolve(SpurtePlugin plugin, String dir, {required SpurteApp app, bool dev = false}) async {
+Future<SpurteApp> resolve(SpurtePlugin plugin, String dir,
+    {required SpurteApp app, bool dev = false}) async {
   final directory = Directory(dir);
   // perform setup
   var main = await (plugin.setup ?? (app) => app)(app);
@@ -19,11 +20,10 @@ Future<SpurteApp> resolve(SpurtePlugin plugin, String dir, {required SpurteApp a
       continue;
     } else {
       final opt = SpurteResolveOptions(
-        name: p.basename(fse.path), 
-        path: p.normalize(fse.absolute.path), 
-        kind: SpurteKind.File,
-        dev: dev
-      );
+          name: p.basename(fse.path),
+          path: p.normalize(fse.absolute.path),
+          kind: SpurteKind.File,
+          dev: dev);
 
       final id = (plugin.resolve ?? (opt) => null)(opt);
       if (id == null) continue;
@@ -48,12 +48,10 @@ Future<SpurteApp> resolve(SpurtePlugin plugin, String dir, {required SpurteApp a
 
       // perform load
       final content = File(v.path).readAsStringSync();
-      final result = (plugin.load ?? (id, source, [options]) {
-        return SpurtePluginResult(
-          path: v.path,
-          src: content
-        );
-      })(id, content, v);
+      final result = (plugin.load ??
+          (id, source, [options]) {
+            return SpurtePluginResult(path: v.path, src: content);
+          })(id, content, v);
 
       if (result.path != null) {
         await Directory(p.dirname(result.path ?? '')).create(recursive: true);
