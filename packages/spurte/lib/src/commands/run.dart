@@ -40,6 +40,7 @@ class RunCommand extends SpurteCommand {
 
   @override
   FutureOr? run() async {
+    logger.info("Preparing Project...");
     final result =
         await preCommand(argResults?.rest ?? [], logger, spurteRunner);
 
@@ -47,6 +48,7 @@ class RunCommand extends SpurteCommand {
     final projectDir = result.cwd;
 
     // run plugins
+    logger.verbose("Running Plugins");
     try {
       await runPlugins(config.plugins?.toList() ?? [], projectDir,
           config: getConfigFile(projectDir, "spurte"), dev: true);
@@ -55,6 +57,7 @@ class RunCommand extends SpurteCommand {
       exit(1);
     }
 
+    logger.info("Building server...");
     // create server options from configuration
     final serverOptions = createServerOptions(config, projectDir.path);
 

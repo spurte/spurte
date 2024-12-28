@@ -42,6 +42,7 @@ Future<DartDevcFrontendServerClient> startDevServer(
   final client = await DartDevcFrontendServerClient.start(
       'org-dartlang-root:///${p.isAbsolute(entrypoint) ? p.relative(entrypoint, from: dir.path) : entrypoint}',
       outputDill(dir.path, name),
+      // dartdevcModuleFormat: 'common',
       fileSystemRoots: [dir.path],
       fileSystemScheme: 'org-dartlang-root',
       platformKernel: p.toUri(sdkDdcKernelPath).toString(),
