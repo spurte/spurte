@@ -123,7 +123,7 @@ Future<DartDevClientResult> dartDevCServer(String entrypoint, Directory dir,
                     ? event.path
                     : p.relative(event.path, from: dir.path))) {
               print("File ${event.path} added. Recompiling...");
-              await recompile(client, entrypoint, changedFile: p.isRelative(event.path) ? event.path : p.relative(event.path, from: dir.absolute.path));
+              await recompile(client, entrypoint);
             }
 
           case "modify":
@@ -133,7 +133,7 @@ Future<DartDevClientResult> dartDevCServer(String entrypoint, Directory dir,
                     ? event.path
                     : p.relative(event.path, from: dir.path))) {
               print("File ${event.path} changed. Recompiling...");
-              await recompile(client, entrypoint);
+              await recompile(client, entrypoint, changedFile: p.isRelative(event.path) ? event.path : p.relative(event.path, from: dir.absolute.path));
             }
         }
       } finally {
