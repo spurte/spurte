@@ -47,10 +47,12 @@ class RunCommand extends SpurteCommand {
     final config = result.config;
     final projectDir = result.cwd;
 
+    PluginSystem pluginSystem;
+
     // run plugins
     logger.verbose("Running Plugins");
     try {
-      await runPlugins(config.plugins?.toList() ?? [], projectDir,
+      pluginSystem = await createPluginWatcher(config.plugins?.toList() ?? [], projectDir,
           config: getConfigFile(projectDir, "spurte"), dev: true);
     } catch (e) {
       logger.error(e.toString(), error: true);
@@ -62,7 +64,7 @@ class RunCommand extends SpurteCommand {
     final serverOptions = createServerOptions(config, projectDir.path);
 
     // build web server and run
-    final server = await serve(serverOptions, log: argResults?['log-requests']);
+    final server = await serve(serverOptions, log: argResults?['log-requests'], onFileChange: (path, type) => pluginSystem.rerun(path),);
 
     final serverDest =
         "http${config.server?.https == null ? "" : "s"}://${config.server?.host ?? "localhost"}:${config.server?.port ?? 8000}";

@@ -60,7 +60,8 @@ compileDevServer(DartDevcFrontendServerClient client) async {
 Future<DartDevClientResult> dartDevCServer(String entrypoint, Directory dir,
     {List<String> ignore = const [],
     List<String> important = const [],
-    List<String> recompileOnChange = const []}) async {
+    List<String> recompileOnChange = const [],
+    Function(String path, String type)? onFileChange}) async {
   // compile dart sdk
   await compileDartSdk(dir);
 
@@ -69,7 +70,7 @@ Future<DartDevClientResult> dartDevCServer(String entrypoint, Directory dir,
   await client.compile([]);
   client.accept();
 
-  var watcher = DirectoryWatcher(dir.path);
+  var watcher = DirectoryWatcher(p.normalize(dir.path));
 
   final ignorePaths = (ignore + [".dart_tool"]).map((e) => p.join(dir.path, e));
   final importantPaths =
@@ -93,6 +94,8 @@ Future<DartDevClientResult> dartDevCServer(String entrypoint, Directory dir,
       }
       clientActive = true;
       // address change
+      // address user change
+      if (onFileChange != null) onFileChange(event.path, event.type.toString());
       try {
         switch (event.type.toString()) {
           case "remove":

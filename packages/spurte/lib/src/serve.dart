@@ -108,7 +108,7 @@ Handler _clientHandler(DartDevcFrontendServerClient client,
   };
 }
 
-Future<SpurteServer> serve(ServerOptions options, {bool log = false}) async {
+Future<SpurteServer> serve(ServerOptions options, {bool log = false, Function(String path, String type)? onFileChange}) async {
   DartClientResult client;
   String relativeEntry = p.isRelative(options.entry)
       ? options.entry
@@ -116,7 +116,7 @@ Future<SpurteServer> serve(ServerOptions options, {bool log = false}) async {
   if (options.prodServer) {
     client = await dart2JsServer(relativeEntry, Directory(options.cwd));
   } else {
-    client = await dartDevCServer(relativeEntry, Directory(options.cwd));
+    client = await dartDevCServer(relativeEntry, Directory(options.cwd), onFileChange: onFileChange);
   }
 
   Cascade cascade = await buildServer(client, relativeEntry, options);

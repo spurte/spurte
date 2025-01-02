@@ -6,6 +6,33 @@ import '../api/plugin.dart';
 
 import 'package:path/path.dart' as p;
 
+List<String> affectedPaths(SpurtePlugin plugin, String dir, {required SpurteApp app, bool dev = false}) {
+  final directory = Directory(dir);
+  // perform resolving and loading
+  final List<String> resolved = [];
+
+  for (final fse in directory.listSync(recursive: true)) {
+    if (fse is! File) {
+      continue;
+    } else {
+      final opt = SpurteResolveOptions(
+          name: p.basename(fse.path),
+          path: p.normalize(fse.absolute.path),
+          kind: SpurteKind.File,
+          dev: dev);
+
+      final id = (plugin.resolve ?? (opt) => null)(opt);
+      if (id == null) {
+        continue;
+      } else {
+        resolved.add(p.normalize(fse.absolute.path));
+      }
+    }
+  }
+
+  return resolved;
+}
+
 Future<SpurteApp> resolve(SpurtePlugin plugin, String dir,
     {required SpurteApp app, bool dev = false}) async {
   final directory = Directory(dir);

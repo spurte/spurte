@@ -10,7 +10,7 @@ import 'package:spurte/src/utils/logger.dart';
 Future<void> buildProject(SpurteConfig config, Directory projectDir,
     {required SpurteLogger logger}) async {
   try {
-    await runPlugins(config.plugins?.toList() ?? [], projectDir,
+    await createPluginWatcher(config.plugins?.toList() ?? [], projectDir,
         config: getConfigFile(projectDir, "spurte"));
   } catch (e) {
     logger.error(e.toString(), error: true);
