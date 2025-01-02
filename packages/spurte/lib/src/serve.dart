@@ -116,7 +116,7 @@ Future<SpurteServer> serve(ServerOptions options, {bool log = false, Function(St
   if (options.prodServer) {
     client = await dart2JsServer(relativeEntry, Directory(options.cwd));
   } else {
-    client = await dartDevCServer(relativeEntry, Directory(options.cwd), onFileChange: onFileChange);
+    client = await dartDevCServer(relativeEntry, Directory(options.cwd), onFileChange: onFileChange, ignore: ['.git']);
   }
 
   Cascade cascade = await buildServer(client, relativeEntry, options);

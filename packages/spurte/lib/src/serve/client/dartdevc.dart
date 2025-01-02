@@ -81,13 +81,13 @@ Future<DartDevClientResult> dartDevCServer(String entrypoint, Directory dir,
 
   watcher.events.asBroadcastStream().listen((event) async {
     if (ignorePaths
-        .where((element) =>
-            (p.isAbsolute(event.path)
-                ? event.path
-                : p.join(dir.path, event.path)) ==
-            element)
+        .where((element) {
+          if (p.isWithin(element, event.path)) return true;
+          return (p.isAbsolute(event.path) ? event.path : p.join(dir.path, event.path)) == element;
+        })
         .isNotEmpty) {
       // ignore change
+      return;
     } else {
       if (clientActive) {
         return;
@@ -123,7 +123,7 @@ Future<DartDevClientResult> dartDevCServer(String entrypoint, Directory dir,
                     ? event.path
                     : p.relative(event.path, from: dir.path))) {
               print("File ${event.path} added. Recompiling...");
-              await recompile(client, entrypoint);
+              await recompile(client, entrypoint, changedFile: p.isRelative(event.path) ? event.path : p.relative(event.path, from: dir.absolute.path));
             }
 
           case "modify":
@@ -157,14 +157,15 @@ void terminateClient(DartDevcFrontendServerClient client,
 }
 
 Future<void> recompile(
-    DartDevcFrontendServerClient client, String entrypoint) async {
+    DartDevcFrontendServerClient client, String entrypoint, {String? changedFile}) async {
   final result =
-      await client.compile([Uri.parse('org-dartlang-root:///$entrypoint')]);
+      await client.compile([Uri.parse('org-dartlang-root:///$entrypoint'), if (changedFile != null) Uri.parse('org-dartlang-root:///$changedFile')]);
   if (result.errorCount > 0) {
     print(
         "Error compiling project: \n${result.compilerOutputLines.join('\n')}");
     client.reject();
   } else {
+    print(result.compilerOutputLines.join('\n'));
     client.accept();
     // TODO: Add hmr
     print("Reload app to see change");
